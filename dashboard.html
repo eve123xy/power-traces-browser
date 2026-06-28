@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Metrics Dashboard — AI Inference</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+<style>
+/* ─── Design tokens ────────────────────────────────────────────────────────── */
+:root {
+  --bg:           #F8F9FA;
+  --surface:      #FFFFFF;
+  --surface2:     #F1F5F9;
+  --border:       #E2E8F0;
+  --text:         #1E293B;
+  --text-muted:   #64748B;
+  --accent:       #3B82F6;
+  --accent-dark:  #2563EB;
+  --accent-bg:    #EFF6FF;
+  --success:      #10B981;
+  --warning:      #F59E0B;
+  --danger:       #EF4444;
+  --radius:       8px;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:    0 4px 14px rgba(0,0,0,.10);
+  --font:         -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono:         "SF Mono", "JetBrains Mono", Consolas, monospace;
+}
+[data-theme="dark"] {
+  --bg:           #0F172A;
+  --surface:      #1E293B;
+  --surface2:     #1E293B;
+  --border:       #334155;
+  --text:         #F1F5F9;
+  --text-muted:   #94A3B8;
+  --accent:       #60A5FA;
+  --accent-dark:  #3B82F6;
+  --accent-bg:    rgba(59,130,246,.12);
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:    0 4px 14px rgba(0,0,0,.5);
+}
+
+/* ─── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .2s, color .2s;
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────────── */
+#header {
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 200;
+  flex-shrink: 0;
+}
+.back-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color .15s;
+}
+.back-link:hover { color: var(--accent); }
+#header h1 {
+  font-size: .95rem;
+  font-weight: 700;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hdr-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+/* ─── Buttons ──────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: 500 12px/1 var(--font);
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.btn-sm { padding: 3px 8px; font-size: 11px; }
+.btn-clear {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.btn-clear:hover { color: var(--danger); background: rgba(239,68,68,.08); }
+
+/* ─── App shell ────────────────────────────────────────────────────────────── */
+#shell {
+  display: flex;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+}
+
+/* ─── Sidebar ──────────────────────────────────────────────────────────────── */
+#sidebar {
+  width: 210px;
+  min-width: 210px;
+  background: var(--surface2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+#sidebar-inner {
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.sb-heading {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-muted);
+}
+.filter-row { display: flex; flex-direction: column; gap: 3px; }
+.filter-label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+select, input[type="text"] {
+  width: 100%;
+  padding: 5px 7px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: 12px var(--font);
+  outline: none;
+  transition: border-color .15s;
+}
+select:focus, input[type="text"]:focus { border-color: var(--accent); }
+#run-badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 20px;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.divider { height: 1px; background: var(--border); margin: 2px 0; }
+
+/* ─── Main area ────────────────────────────────────────────────────────────── */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── State overlays ───────────────────────────────────────────────────────── */
+.state-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--bg);
+  z-index: 100;
+  padding: 32px;
+  text-align: center;
+}
+.state-layer .big-icon { font-size: 44px; }
+.state-layer h3 { font-size: 17px; color: var(--text); }
+.state-layer p { color: var(--text-muted); max-width: 420px; }
+.state-layer code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface2);
+  padding: 8px 12px;
+  border-radius: 6px;
+  max-width: 500px;
+  word-break: break-all;
+  color: var(--danger);
+}
+.spinner {
+  width: 34px; height: 34px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+[hidden] { display: none !important; }
+
+/* ─── Tab bar ──────────────────────────────────────────────────────────────── */
+#tab-bar {
+  display: flex;
+  gap: 2px;
+  padding: 9px 16px 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.tab-btn {
+  padding: 7px 16px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 6px 6px 0 0;
+  background: none;
+  color: var(--text-muted);
+  font: 500 13px var(--font);
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+.tab-btn:hover { color: var(--text); background: var(--accent-bg); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ─── Tab panels ───────────────────────────────────────────────────────────── */
+#tab-panels { flex: 1; overflow: hidden; position: relative; }
+.tab-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.tab-panel.active {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* ─── Explorer tab ─────────────────────────────────────────────────────────── */
+#explorer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  flex-shrink: 0;
+}
+.axis-ctrl { display: flex; align-items: center; gap: 6px; }
+.axis-ctrl label { font-size: 11px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.axis-ctrl select { width: auto; min-width: 155px; }
+.explorer-info { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+#explorer-plot-wrap {
+  flex: 1;
+  padding: 10px;
+  min-height: 0;
+  overflow: hidden;
+}
+#explorer-plot { width: 100%; height: 100%; }
+
+/* ─── Comparison tab ───────────────────────────────────────────────────────── */
+#comparison-layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+#run-list-panel {
+  width: 280px;
+  min-width: 220px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+#run-list-hdr {
+  padding: 8px 11px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+#run-list-hdr h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+.sel-badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+#run-list-search { padding: 7px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+#run-items { flex: 1; overflow-y: auto; }
+.run-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .1s;
+}
+.run-item:hover { background: var(--accent-bg); }
+.run-item.selected { background: var(--accent-bg); }
+.run-item input[type="checkbox"] { cursor: pointer; accent-color: var(--accent); flex-shrink: 0; }
+.run-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.run-item-body { flex: 1; min-width: 0; }
+.run-item-name {
+  font-size: 12px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.run-item-sub {
+  font-size: 11px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.no-trace-pill {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+}
+#comp-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+#comp-chart-wrap { flex: 1; padding: 10px; min-height: 250px; overflow: hidden; }
+#comp-chart { width: 100%; height: 100%; }
+#comp-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 24px;
+}
+#comp-table-wrap {
+  max-height: 220px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ─── Tables ───────────────────────────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 5px 9px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 5px 9px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr:hover td { background: var(--accent-bg); }
+.num { font-variant-numeric: tabular-nums; }
+.dash { color: var(--text-muted); }
+
+/* ─── Insights tab ─────────────────────────────────────────────────────────── */
+#insights-inner {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 16px;
+}
+.insight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s, transform .15s;
+}
+.insight-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.ic-icon { font-size: 26px; margin-bottom: 10px; }
+.ic-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.ic-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.ic-desc { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.ic-note { font-size: 11px; color: var(--text-muted); }
+
+/* ─── Empty states ─────────────────────────────────────────────────────────── */
+.empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ─── Scrollbars ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Mobile ───────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #sidebar { display: none; }
+  #comparison-layout { flex-direction: column; }
+  #run-list-panel { width: 100%; max-height: 210px; }
+  #header h1 { font-size: .82rem; }
+  .axis-ctrl select { min-width: 120px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── Header ───────────────────────────────────────────────────────────────── -->
+<div id="header">
+  <a class="back-link" href="index.html">&#8592; Trace Browser</a>
+  <h1>AI Inference Power Dashboard</h1>
+  <div class="hdr-actions">
+    <button class="btn" onclick="exportCSV()">&#8659; Export CSV</button>
+    <button class="btn" id="theme-btn" onclick="toggleTheme()">&#9790; Dark</button>
+  </div>
+</div>
+
+<!-- ─── App shell ─────────────────────────────────────────────────────────────── -->
+<div id="shell">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-inner">
+      <div class="sb-heading">Filters</div>
+      <div class="filter-row">
+        <span class="filter-label">Model family</span>
+        <select id="f-family"><option value="">All</option></select>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">GPU</span>
+        <select id="f-gpu"><option value="">All</option></select>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">dtype</span>
+        <select id="f-dtype"><option value="">All</option></select>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Quantization</span>
+        <select id="f-quant"><option value="">All</option></select>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Experiment</span>
+        <select id="f-exp"><option value="">All</option></select>
+      </div>
+      <div class="divider"></div>
+      <div class="filter-row">
+        <span class="filter-label">Search</span>
+        <input type="text" id="f-search" placeholder="run ID or model…">
+      </div>
+      <button class="btn btn-clear" onclick="clearFilters()">&#10005; Clear filters</button>
+      <div id="run-badge">Loading…</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div id="main">
+
+    <!-- Loading overlay -->
+    <div class="state-layer" id="loading-layer">
+      <div class="spinner"></div>
+      <h3>Loading manifest…</h3>
+      <p>Fetching run metadata from GitHub Pages</p>
+    </div>
+
+    <!-- Error overlay -->
+    <div class="state-layer" id="error-layer" hidden>
+      <div class="big-icon">&#9888;&#65039;</div>
+      <h3>Manifest not found</h3>
+      <p>Could not load <code style="background:none;color:var(--accent);padding:0">traces/manifest.json</code> from GitHub Pages.
+         Run the data pipeline to generate the manifest and trace JSONs, then push to GitHub.</p>
+      <code id="error-detail"></code>
+      <p style="font-size:11px">Expected URL: <span id="manifest-url-display"></span></p>
+    </div>
+
+    <!-- Tab bar (hidden until loaded) -->
+    <div id="tab-bar" hidden>
+      <button class="tab-btn active" data-tab="explorer" onclick="switchTab('explorer',this)">&#128200; Metric Explorer</button>
+      <button class="tab-btn" data-tab="comparison" onclick="switchTab('comparison',this)">&#9889; Comparison</button>
+      <button class="tab-btn" data-tab="insights"   onclick="switchTab('insights',this)">&#128161; Quick Insights</button>
+    </div>
+
+    <!-- Tab panels (hidden until loaded) -->
+    <div id="tab-panels" hidden>
+
+      <!-- ── Explorer ──────────────────────────────────────────────────────── -->
+      <div id="tab-explorer" class="tab-panel active">
+        <div id="explorer-controls">
+          <div class="axis-ctrl">
+            <label>X axis</label>
+            <select id="x-axis" onchange="renderExplorer()">
+              <option value="param_size_b">Model size (B params)</option>
+              <option value="batch_size">Batch size</option>
+              <option value="concurrency">Concurrency</option>
+              <option value="context_len">Context length (tokens)</option>
+              <option value="gpu_memory_util">GPU memory utilization</option>
+            </select>
+          </div>
+          <div class="axis-ctrl">
+            <label>Y axis</label>
+            <select id="y-axis" onchange="renderExplorer()">
+              <option value="energy_per_token_mj">Energy per token (mJ)</option>
+              <option value="throughput_tok_s">Throughput (tok/s)</option>
+              <option value="ttft_p50_ms">TTFT p50 (ms)</option>
+              <option value="tpot_p50_ms">TPOT p50 (ms)</option>
+              <option value="power_mean_w">Power mean (W)</option>
+            </select>
+          </div>
+          <div class="axis-ctrl">
+            <label>Color by</label>
+            <select id="color-by" onchange="renderExplorer()">
+              <option value="gpu_type">GPU type</option>
+              <option value="model_family">Model family</option>
+              <option value="dtype">dtype</option>
+              <option value="tp_size">TP size</option>
+            </select>
+          </div>
+          <span class="explorer-info" id="explorer-info"></span>
+        </div>
+        <div id="explorer-plot-wrap">
+          <div id="explorer-plot"></div>
+        </div>
+      </div>
+
+      <!-- ── Comparison ────────────────────────────────────────────────────── -->
+      <div id="tab-comparison" class="tab-panel">
+        <div id="comparison-layout">
+
+          <!-- Left: run list -->
+          <div id="run-list-panel">
+            <div id="run-list-hdr">
+              <h4>Select runs to compare</h4>
+              <span class="sel-badge" id="sel-count">0 selected</span>
+            </div>
+            <div id="run-list-search">
+              <input type="text" id="comp-search" placeholder="Filter runs…" oninput="renderRunList()">
+            </div>
+            <div id="run-items"><div class="empty">No runs loaded</div></div>
+          </div>
+
+          <!-- Right: chart + table -->
+          <div id="comp-right">
+            <div id="comp-chart-wrap">
+              <div id="comp-chart"></div>
+            </div>
+            <div id="comp-empty">Select runs from the list to overlay their power traces</div>
+            <div id="comp-table-wrap" hidden>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Run</th>
+                    <th>GPU</th>
+                    <th>dtype / quant</th>
+                    <th>EPT (mJ)</th>
+                    <th>Throughput (tok/s)</th>
+                    <th>TTFT p50 (ms)</th>
+                    <th>TTFT p99 (ms)</th>
+                    <th>TPOT p50 (ms)</th>
+                    <th>TPOT p99 (ms)</th>
+                    <th>Power (W)</th>
+                  </tr>
+                </thead>
+                <tbody id="comp-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Insights ──────────────────────────────────────────────────────── -->
+      <div id="tab-insights" class="tab-panel">
+        <div id="insights-inner">
+          <div class="insight-grid" id="insight-grid">
+            <div class="empty" style="grid-column:1/-1">Computing insights…</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-panels -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Constants & state
+═══════════════════════════════════════════════════════════════════════════ */
+const BASE_URL     = 'https://eve123xy.github.io/power-traces-browser/';
+const MANIFEST_URL = BASE_URL + 'traces/manifest.json';
+
+const FIELD_LABEL = {
+  param_size_b:        'Model Size (B params)',
+  batch_size:          'Batch Size',
+  concurrency:         'Concurrency',
+  context_len:         'Context Length (tokens)',
+  gpu_memory_util:     'GPU Memory Utilization',
+  energy_per_token_mj: 'Energy per Token (mJ)',
+  throughput_tok_s:    'Throughput (tok/s)',
+  ttft_p50_ms:         'TTFT p50 (ms)',
+  tpot_p50_ms:         'TPOT p50 (ms)',
+  power_mean_w:        'Power Mean (W)',
+  gpu_type:            'GPU Type',
+  model_family:        'Model Family',
+  dtype:               'dtype',
+  tp_size:             'TP Size',
+};
+
+const PALETTE = [
+  '#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6',
+  '#06B6D4','#EC4899','#84CC16','#F97316','#6366F1',
+  '#14B8A6','#E11D48','#7C3AED','#0EA5E9','#D97706',
+];
+
+const PHASE_FILL_LIGHT = {
+  loading:   'rgba(208,232,255,.4)',
+  warmup:    'rgba(255,232,192,.4)',
+  inference: 'rgba(200,240,216,.4)',
+  teardown:  'rgba(235,235,235,.4)',
+};
+const PHASE_FILL_DARK = {
+  loading:   'rgba(29,78,216,.18)',
+  warmup:    'rgba(217,119,6,.15)',
+  inference: 'rgba(16,185,129,.15)',
+  teardown:  'rgba(100,116,139,.12)',
+};
+
+let allRuns      = [];
+let filteredRuns = [];
+let selectedIds  = new Set();
+let traceCache   = {};
+let darkMode     = false;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Data normalization  (bridges old embedded schema → new manifest schema)
+═══════════════════════════════════════════════════════════════════════════ */
+function num(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = +v;
+  return isFinite(n) ? n : null;
+}
+
+function normalizeRun(r) {
+  const n = Object.assign({}, r);
+
+  // Field aliases (old index.html names → canonical dashboard names)
+  if (n.tp_size    == null && n.tp_degree           != null) n.tp_size            = n.tp_degree;
+  if (n.power_mean_w == null && n.avg_power_W       != null) n.power_mean_w       = n.avg_power_W;
+  if (n.energy_per_token_mj == null && n.energy_per_token_mJ != null)
+                                                              n.energy_per_token_mj = n.energy_per_token_mJ;
+  if (n.throughput_tok_s == null && n.throughput    != null) n.throughput_tok_s   = n.throughput;
+  if (n.context_len == null && n.context_length_tokens != null && n.context_length_tokens !== '')
+                                                              n.context_len        = n.context_length_tokens;
+
+  // Coerce numerics
+  ['param_size_b','batch_size','concurrency','context_len','gpu_memory_util',
+   'energy_per_token_mj','throughput_tok_s','ttft_p50_ms','ttft_p99_ms',
+   'tpot_p50_ms','tpot_p99_ms','power_mean_w','tp_size','n_gpus','n_instances']
+    .forEach(f => { n[f] = num(n[f]); });
+
+  // has_trace fallback (old format embeds trace inline)
+  if (n.has_trace === undefined) n.has_trace = !!(n.trace);
+  if (typeof n.has_trace === 'string') n.has_trace = n.has_trace === 'true';
+
+  return n;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Data loading
+═══════════════════════════════════════════════════════════════════════════ */
+document.getElementById('manifest-url-display').textContent = MANIFEST_URL;
+
+async function loadData() {
+  try {
+    const res = await fetch(MANIFEST_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    const raw = await res.json();
+    allRuns = raw.map(normalizeRun);
+
+    // Cache any inline traces (old-style embedded data)
+    allRuns.forEach(r => { if (r.trace) traceCache[r.run_id] = r.trace; });
+
+    document.getElementById('loading-layer').hidden = true;
+    document.getElementById('tab-bar').hidden       = false;
+    document.getElementById('tab-panels').hidden    = false;
+
+    populateFilters();
+    applyFilters();      // renders explorer + run list
+    renderInsights();
+
+  } catch (err) {
+    document.getElementById('loading-layer').hidden  = true;
+    document.getElementById('error-layer').hidden    = false;
+    document.getElementById('error-detail').textContent = String(err);
+    console.error('[dashboard] Failed to load manifest:', err);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Filters
+═══════════════════════════════════════════════════════════════════════════ */
+function uniq(arr) { return [...new Set(arr.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))); }
+
+function populateFilters() {
+  fillSelect('f-family', uniq(allRuns.map(r => r.model_family)));
+  fillSelect('f-gpu',    uniq(allRuns.map(r => r.gpu_type)));
+  fillSelect('f-dtype',  uniq(allRuns.map(r => r.dtype)));
+  fillSelect('f-quant',  uniq(allRuns.map(r => r.quantization)));
+  fillSelect('f-exp',    uniq(allRuns.map(r => r.experiment_group)));
+}
+
+function fillSelect(id, values) {
+  const sel = document.getElementById(id);
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All</option>' +
+    values.map(v => `<option value="${esc(v)}"${v===cur?' selected':''}>${esc(v)}</option>`).join('');
+}
+
+function applyFilters() {
+  const fam    = document.getElementById('f-family').value;
+  const gpu    = document.getElementById('f-gpu').value;
+  const dtype  = document.getElementById('f-dtype').value;
+  const quant  = document.getElementById('f-quant').value;
+  const exp    = document.getElementById('f-exp').value;
+  const search = document.getElementById('f-search').value.trim().toLowerCase();
+
+  filteredRuns = allRuns.filter(r => {
+    if (fam   && r.model_family      !== fam)   return false;
+    if (gpu   && r.gpu_type          !== gpu)   return false;
+    if (dtype && r.dtype             !== dtype) return false;
+    if (quant && r.quantization      !== quant) return false;
+    if (exp   && r.experiment_group  !== exp)   return false;
+    if (search) {
+      const hay = (r.run_id + ' ' + (r.model_short||'') + ' ' + (r.model||'')).toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('run-badge').textContent = `${filteredRuns.length} run${filteredRuns.length!==1?'s':''}`;
+  renderExplorer();
+  renderRunList();
+}
+
+function clearFilters() {
+  ['f-family','f-gpu','f-dtype','f-quant','f-exp'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-search').value = '';
+  applyFilters();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Feature 1 — Metric Explorer
+═══════════════════════════════════════════════════════════════════════════ */
+function renderExplorer() {
+  const xKey = document.getElementById('x-axis').value;
+  const yKey = document.getElementById('y-axis').value;
+  const cKey = document.getElementById('color-by').value;
+
+  const valid = filteredRuns.filter(r => r[xKey] != null && r[yKey] != null);
+  document.getElementById('explorer-info').textContent =
+    `${valid.length} / ${filteredRuns.length} runs with both metrics`;
+
+  const plotEl = document.getElementById('explorer-plot');
+
+  if (!valid.length) {
+    Plotly.purge(plotEl);
+    plotEl.innerHTML = '<div class="empty" style="padding-top:80px">No runs have data for both selected metrics</div>';
+    return;
+  }
+
+  const colorVals = uniq(valid.map(r => String(r[cKey] ?? 'N/A')));
+  const cMap = {};
+  colorVals.forEach((v, i) => { cMap[v] = PALETTE[i % PALETTE.length]; });
+
+  const traces = colorVals.map(cv => {
+    const runs = valid.filter(r => String(r[cKey] ?? 'N/A') === cv);
+    return {
+      x: runs.map(r => r[xKey]),
+      y: runs.map(r => r[yKey]),
+      type: 'scatter', mode: 'markers',
+      name: cv,
+      marker: {
+        color: cMap[cv], size: 9, opacity: .85,
+        line: { width: 1, color: darkMode ? 'rgba(15,23,42,.6)' : 'rgba(255,255,255,.7)' },
+      },
+      customdata: runs.map(r => ({
+        run_id:    r.run_id,
+        model:     r.model_short || r.model_family || '—',
+        gpu:       r.gpu_type || '—',
+        tp:        r.tp_size ?? '—',
+        dtype:     r.dtype || '—',
+        quant:     (r.quantization && r.quantization !== 'none') ? r.quantization : 'none',
+        ept:       r.energy_per_token_mj != null ? r.energy_per_token_mj.toFixed(2) : '—',
+        tput:      r.throughput_tok_s    != null ? (+r.throughput_tok_s).toFixed(1)  : '—',
+        ttft50:    r.ttft_p50_ms         != null ? r.ttft_p50_ms.toFixed(1)          : '—',
+        tpot50:    r.tpot_p50_ms         != null ? r.tpot_p50_ms.toFixed(2)          : '—',
+        pw:        r.power_mean_w        != null ? r.power_mean_w.toFixed(1)         : '—',
+        batch:     r.batch_size     ?? '—',
+        conc:      r.concurrency    ?? '—',
+        ctx:       r.context_len    ?? '—',
+        gmu:       r.gpu_memory_util != null ? (r.gpu_memory_util*100).toFixed(0)+'%' : '—',
+        ngpu:      r.n_gpus         ?? '—',
+        exp:       r.experiment_group ?? '—',
+      })),
+      hovertemplate:
+        '<b>%{customdata.run_id}</b><br>' +
+        '<b>%{customdata.model}</b> · %{customdata.gpu} · TP%{customdata.tp}<br>' +
+        'dtype: %{customdata.dtype}  quant: %{customdata.quant}<br>' +
+        '<span style="color:#888">────────────────────</span><br>' +
+        'EPT: <b>%{customdata.ept}</b> mJ/tok<br>' +
+        'Throughput: <b>%{customdata.tput}</b> tok/s<br>' +
+        'TTFT p50: %{customdata.ttft50} ms<br>' +
+        'TPOT p50: %{customdata.tpot50} ms<br>' +
+        'Power: %{customdata.pw} W<br>' +
+        '<span style="color:#888">────────────────────</span><br>' +
+        'Batch: %{customdata.batch}  Concurrency: %{customdata.conc}<br>' +
+        'Context: %{customdata.ctx} tok  GMU: %{customdata.gmu}<br>' +
+        'GPUs: %{customdata.ngpu}  Experiment: %{customdata.exp}' +
+        '<extra></extra>',
+    };
+  });
+
+  const layout = explorerLayout(xKey, yKey);
+  const config = plotConfig();
+  Plotly.react(plotEl, traces, layout, config);
+}
+
+function explorerLayout(xKey, yKey) {
+  const grid  = darkMode ? '#334155' : '#E2E8F0';
+  const zero  = darkMode ? '#475569' : '#CBD5E1';
+  const paper = darkMode ? '#1E293B' : '#FFFFFF';
+  return {
+    xaxis: { title: FIELD_LABEL[xKey]||xKey, gridcolor: grid, zerolinecolor: zero, automargin: true },
+    yaxis: { title: FIELD_LABEL[yKey]||yKey, gridcolor: grid, zerolinecolor: zero, automargin: true },
+    paper_bgcolor: paper,
+    plot_bgcolor:  paper,
+    font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+            color: darkMode ? '#F1F5F9' : '#1E293B', size: 12 },
+    legend: { x: 1.01, xanchor: 'left', bgcolor: 'rgba(0,0,0,0)', font: { size: 11 } },
+    margin: { l: 60, r: 20, t: 16, b: 52 },
+    hovermode: 'closest',
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Feature 2 — Comparison Mode
+═══════════════════════════════════════════════════════════════════════════ */
+function renderRunList() {
+  const q = (document.getElementById('comp-search')?.value || '').toLowerCase();
+  let runs = filteredRuns;
+  if (q) {
+    runs = runs.filter(r => {
+      const hay = (r.run_id + ' ' + (r.model_short||'')).toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  // Build ordered color map for selected runs
+  const selArr  = [...selectedIds];
+  const selColor = {};
+  selArr.forEach((id, i) => { selColor[id] = PALETTE[i % PALETTE.length]; });
+
+  const el = document.getElementById('run-items');
+  if (!runs.length) { el.innerHTML = '<div class="empty">No runs match</div>'; return; }
+
+  el.innerHTML = '';
+  runs.forEach(r => {
+    const isSel  = selectedIds.has(r.run_id);
+    const color  = isSel ? (selColor[r.run_id] || '#ccc') : 'transparent';
+    const hasT   = r.has_trace !== false && !r.summary_only;
+    const qLabel = r.quantization && r.quantization !== 'none' ? '+' + r.quantization : '';
+    const cLabel = r.concurrency != null ? ` c=${r.concurrency}` : '';
+
+    const div = document.createElement('div');
+    div.className = 'run-item' + (isSel ? ' selected' : '');
+    div.innerHTML = `
+      <input type="checkbox" ${isSel?'checked':''} onclick="toggleRun(event,'${escAttr(r.run_id)}')">
+      <span class="run-dot" style="background:${color}"></span>
+      <div class="run-item-body">
+        <div class="run-item-name">${esc(r.model_short||r.model_family||'?')} · ${esc(r.gpu_type||'?')}</div>
+        <div class="run-item-sub">TP${r.tp_size??'?'} · ${esc(r.dtype||'?')}${esc(qLabel)}${esc(cLabel)}${hasT?'':' · summary'}</div>
+      </div>
+      ${!hasT ? '<span class="no-trace-pill">no trace</span>' : ''}
+    `;
+    div.addEventListener('click', e => {
+      if (e.target.tagName !== 'INPUT') toggleRun(e, r.run_id);
+    });
+    el.appendChild(div);
+  });
+}
+
+function toggleRun(e, runId) {
+  e.stopPropagation();
+  if (selectedIds.has(runId)) {
+    selectedIds.delete(runId);
+  } else {
+    if (selectedIds.size >= 12) { alert('Maximum 12 runs can be compared at once'); return; }
+    selectedIds.add(runId);
+  }
+  const n = selectedIds.size;
+  document.getElementById('sel-count').textContent = `${n} selected`;
+  renderRunList();
+  updateComparison();
+}
+
+async function updateComparison() {
+  const selArr = [...selectedIds];
+  const selRuns = selArr.map(id => allRuns.find(r => r.run_id === id)).filter(Boolean);
+
+  // Build color map
+  const selColor = {};
+  selArr.forEach((id, i) => { selColor[id] = PALETTE[i % PALETTE.length]; });
+
+  // Fetch traces we don't have yet
+  await Promise.all(selRuns.map(async r => {
+    if (traceCache[r.run_id] != null) return;
+    if (!r.has_trace || r.summary_only) return;
+    // trace_run_id may differ for sub-condition entries (e.g. concurrency sweep rows)
+    const traceId = r.trace_run_id || r.run_id;
+    // If trace already cached under the base trace_run_id, reuse it
+    if (traceCache[traceId] != null) { traceCache[r.run_id] = traceCache[traceId]; return; }
+    try {
+      const url = BASE_URL + 'traces/' + encodeURIComponent(traceId) + '.json';
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        // Support both {trace:{ts,pw,phases}} and flat {ts,pw,phases}
+        const tc = data.trace || data;
+        traceCache[r.run_id] = tc;
+        traceCache[traceId]  = tc;  // cache under base id too
+      } else {
+        traceCache[r.run_id] = null;  // mark as unavailable
+      }
+    } catch(e) {
+      traceCache[r.run_id] = null;
+      console.warn('[dashboard] Could not fetch trace for', r.run_id, e);
+    }
+  }));
+
+  // Build Plotly traces
+  const chartTraces = [];
+  const shapes = [];
+  let firstWithPhases = true;
+
+  selRuns.forEach((r, i) => {
+    const color = selColor[r.run_id] || PALETTE[i % PALETTE.length];
+    const tc = traceCache[r.run_id];
+    if (!tc) return;
+
+    const ts  = tc.ts || tc.timestamps;
+    const pw  = tc.pw || tc.pw_total || tc.power;
+    if (!ts || !pw || !ts.length) return;
+
+    // Phase backgrounds from first run only (avoid visual clutter)
+    if (firstWithPhases && tc.phases && tc.phases.length) {
+      const fills = darkMode ? PHASE_FILL_DARK : PHASE_FILL_LIGHT;
+      tc.phases.forEach(ph => {
+        shapes.push({
+          type: 'rect', xref: 'x', yref: 'paper',
+          x0: ph.t_start, x1: ph.t_end, y0: 0, y1: 1,
+          fillcolor: fills[ph.phase] || 'rgba(200,200,200,.2)',
+          opacity: 1, line: { width: 0 }, layer: 'below',
+        });
+      });
+      firstWithPhases = false;
+    }
+
+    const label = `${r.model_short||r.model_family||'?'} · ${r.gpu_type||'?'}` +
+                  (r.quantization && r.quantization !== 'none' ? ' ' + r.quantization : '') +
+                  (r.concurrency != null ? ` c=${r.concurrency}` : '');
+    chartTraces.push({
+      x: ts, y: pw, type: 'scatter', mode: 'lines',
+      name: label, line: { color, width: 1.5 },
+    });
+  });
+
+  const paper = darkMode ? '#1E293B' : '#FFFFFF';
+  const grid  = darkMode ? '#334155' : '#E2E8F0';
+
+  const compChartEl = document.getElementById('comp-chart');
+  const compEmpty   = document.getElementById('comp-empty');
+  const compTable   = document.getElementById('comp-table-wrap');
+
+  if (!selRuns.length) {
+    Plotly.purge(compChartEl);
+    compChartEl.innerHTML = '';
+    compEmpty.style.display = 'flex';
+    compTable.hidden = true;
+    return;
+  }
+
+  compEmpty.style.display = 'none';
+  compTable.hidden = false;
+
+  if (chartTraces.length) {
+    Plotly.react(compChartEl, chartTraces, {
+      shapes,
+      xaxis: { title: 'Time (s)', gridcolor: grid },
+      yaxis: { title: 'Total Power (W)', gridcolor: grid },
+      paper_bgcolor: paper, plot_bgcolor: paper,
+      font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+              color: darkMode ? '#F1F5F9' : '#1E293B', size: 12 },
+      margin: { l: 58, r: 16, t: 14, b: 46 },
+      hovermode: 'x unified',
+      legend: { x: 1.01, xanchor: 'left', bgcolor: 'rgba(0,0,0,0)', font: { size: 11 } },
+    }, plotConfig());
+  } else {
+    compChartEl.innerHTML =
+      '<div class="empty" style="padding-top:50px">Selected runs have no power trace (summary-only)</div>';
+  }
+
+  // Comparison table
+  const tbody = document.getElementById('comp-tbody');
+  tbody.innerHTML = '';
+  selRuns.forEach((r, i) => {
+    const color = selColor[r.run_id] || PALETTE[i % PALETTE.length];
+    const fmt = (v, d=1) => v != null ? `<span class="num">${(+v).toFixed(d)}</span>` : '<span class="dash">—</span>';
+    const qLabel = (r.quantization && r.quantization !== 'none') ? '+' + r.quantization : '';
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>
+          <span class="run-dot" style="background:${color};display:inline-block;margin-right:6px;vertical-align:middle"></span>
+          <b>${esc(r.model_short||r.model_family||'?')}</b>
+          <div style="font-size:10px;color:var(--text-muted);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.run_id)}</div>
+        </td>
+        <td>${esc(r.gpu_type||'—')}</td>
+        <td>${esc(r.dtype||'—')}${esc(qLabel)}</td>
+        <td>${fmt(r.energy_per_token_mj, 2)}</td>
+        <td>${fmt(r.throughput_tok_s, 1)}</td>
+        <td>${fmt(r.ttft_p50_ms, 1)}</td>
+        <td>${fmt(r.ttft_p99_ms, 1)}</td>
+        <td>${fmt(r.tpot_p50_ms, 2)}</td>
+        <td>${fmt(r.tpot_p99_ms, 2)}</td>
+        <td>${fmt(r.power_mean_w, 1)}</td>
+      </tr>
+    `);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Feature 3 — Quick Insights
+═══════════════════════════════════════════════════════════════════════════ */
+function renderInsights() {
+  const eptRuns  = allRuns.filter(r => r.energy_per_token_mj != null);
+  const tputRuns = allRuns.filter(r => r.throughput_tok_s != null);
+  const cards    = [];
+
+  /* 1 — Most efficient */
+  if (eptRuns.length) {
+    const best = eptRuns.reduce((a, b) => a.energy_per_token_mj < b.energy_per_token_mj ? a : b);
+    const qNote = best.quantization && best.quantization !== 'none' ? ' + ' + best.quantization : '';
+    cards.push({
+      icon: '&#9889;',
+      label: 'Most Efficient Run',
+      value: best.energy_per_token_mj.toFixed(2) + ' mJ/tok',
+      desc:  `${best.model_short || best.model_family || '?'} on ${best.gpu_type || '?'}`,
+      note:  `TP${best.tp_size ?? '?'} · ${best.dtype || '?'}${qNote} — from ${eptRuns.length} runs`,
+    });
+  } else {
+    cards.push({ icon: '&#9889;', label: 'Most Efficient Run', value: '—', desc: 'No EPT data', note: 'Need energy_per_token_mj in manifest' });
+  }
+
+  /* 2 — Highest throughput */
+  if (tputRuns.length) {
+    const best = tputRuns.reduce((a, b) => a.throughput_tok_s > b.throughput_tok_s ? a : b);
+    cards.push({
+      icon: '&#128640;',
+      label: 'Highest Throughput',
+      value: (+best.throughput_tok_s).toFixed(0) + ' tok/s',
+      desc:  `${best.model_short || best.model_family || '?'} on ${best.gpu_type || '?'}`,
+      note:  `TP${best.tp_size ?? '?'} · ${best.dtype || '?'} — from ${tputRuns.length} runs`,
+    });
+  } else {
+    cards.push({ icon: '&#128640;', label: 'Highest Throughput', value: '—', desc: 'No throughput data', note: 'Need throughput_tok_s in manifest' });
+  }
+
+  /* 3 — Best quantization win */
+  const fp16Base = eptRuns.filter(r =>
+    (r.dtype === 'fp16' || r.dtype === 'float16' || r.dtype === 'bf16' || r.dtype === 'bfloat16') &&
+    (!r.quantization || r.quantization === 'none')
+  );
+  const quantRuns = eptRuns.filter(r => r.quantization && r.quantization !== 'none');
+  const wins = [];
+
+  quantRuns.forEach(qr => {
+    const baseline = fp16Base.find(b =>
+      b.model_family === qr.model_family &&
+      b.gpu_type     === qr.gpu_type     &&
+      b.tp_size      === qr.tp_size      &&
+      (b.param_size_b == null || qr.param_size_b == null ||
+       Math.abs(b.param_size_b - qr.param_size_b) < 1.0)
+    );
+    if (baseline) {
+      const pct = (1 - qr.energy_per_token_mj / baseline.energy_per_token_mj) * 100;
+      if (pct > 0) wins.push({ qr, baseline, pct });
+    }
+  });
+
+  if (wins.length) {
+    wins.sort((a, b) => b.pct - a.pct);
+    const { qr, baseline, pct } = wins[0];
+    cards.push({
+      icon: '&#128300;',
+      label: 'Best Quantization Win',
+      value: '+' + pct.toFixed(1) + '% EPT saved',
+      desc:  `${qr.quantization} vs ${baseline.dtype} — ${qr.model_short || qr.model_family || '?'} on ${qr.gpu_type || '?'}`,
+      note:  `${qr.energy_per_token_mj.toFixed(2)} vs ${baseline.energy_per_token_mj.toFixed(2)} mJ/tok`,
+    });
+  } else {
+    cards.push({
+      icon: '&#128300;', label: 'Best Quantization Win', value: '—',
+      desc: 'No matched baseline / quantized pairs found',
+      note: 'Need same model family + GPU in both fp16 and quantized',
+    });
+  }
+
+  /* 4 — Multi-instance advantage */
+  const multiRuns  = eptRuns.filter(r => r.n_instances != null && r.n_instances > 1);
+  const singleRuns = eptRuns.filter(r => !r.n_instances || r.n_instances === 1);
+
+  if (multiRuns.length && singleRuns.length) {
+    const bestM = multiRuns.reduce((a, b)  => a.energy_per_token_mj < b.energy_per_token_mj ? a : b);
+    const bestS = singleRuns.reduce((a, b) => a.energy_per_token_mj < b.energy_per_token_mj ? a : b);
+    const pct   = (1 - bestM.energy_per_token_mj / bestS.energy_per_token_mj) * 100;
+    cards.push({
+      icon: '&#127981;',
+      label: 'Multi-Instance Advantage',
+      value: (pct > 0 ? '+' : '') + pct.toFixed(1) + '% EPT ' + (pct > 0 ? 'saved' : 'worse'),
+      desc:  `${bestM.n_instances}× ${bestM.model_short || bestM.model_family || '?'} vs single-GPU baseline`,
+      note:  `${bestM.energy_per_token_mj.toFixed(2)} vs ${bestS.energy_per_token_mj.toFixed(2)} mJ/tok`,
+    });
+  } else {
+    cards.push({
+      icon: '&#127981;', label: 'Multi-Instance Advantage', value: '—',
+      desc: multiRuns.length === 0 ? 'No multi-instance runs loaded' : 'No single-instance baseline',
+      note: 'Need n_instances > 1 field in manifest',
+    });
+  }
+
+  document.getElementById('insight-grid').innerHTML = cards.map(c => `
+    <div class="insight-card">
+      <div class="ic-icon">${c.icon}</div>
+      <div class="ic-label">${c.label}</div>
+      <div class="ic-value">${c.value}</div>
+      <div class="ic-desc">${c.desc}</div>
+      <div class="ic-note">${c.note}</div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Feature 4 — Export CSV
+═══════════════════════════════════════════════════════════════════════════ */
+function exportCSV() {
+  if (!filteredRuns.length) { alert('No runs to export. Load data first.'); return; }
+
+  const COLS = [
+    'run_id','model_short','model_family','param_size_b','gpu_type',
+    'tp_size','dtype','quantization','experiment_group',
+    'batch_size','concurrency','context_len','gpu_memory_util','n_gpus','n_instances',
+    'energy_per_token_mj','throughput_tok_s',
+    'ttft_p50_ms','ttft_p99_ms','tpot_p50_ms','tpot_p99_ms',
+    'power_mean_w','has_trace','summary_only',
+  ];
+
+  const csvLines = [COLS.join(',')];
+  filteredRuns.forEach(r => {
+    csvLines.push(COLS.map(f => {
+      const v = r[f];
+      if (v == null) return '';
+      const s = String(v);
+      return (s.includes(',') || s.includes('"') || s.includes('\n'))
+        ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(','));
+  });
+
+  const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `power_runs_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Tab switching
+═══════════════════════════════════════════════════════════════════════════ */
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  btn.classList.add('active');
+  // Re-render after CSS transition so Plotly measures correct size
+  if (tabId === 'explorer')    setTimeout(renderExplorer, 60);
+  if (tabId === 'comparison')  setTimeout(updateComparison, 60);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Theme toggle
+═══════════════════════════════════════════════════════════════════════════ */
+function toggleTheme() {
+  darkMode = !darkMode;
+  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
+  document.getElementById('theme-btn').innerHTML = darkMode ? '&#9728; Light' : '&#9790; Dark';
+  // Re-render active charts with new colours
+  const active = document.querySelector('.tab-panel.active');
+  if (active?.id === 'tab-explorer')   renderExplorer();
+  if (active?.id === 'tab-comparison') updateComparison();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Plotly shared config
+═══════════════════════════════════════════════════════════════════════════ */
+function plotConfig() {
+  return {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['lasso2d','select2d','autoScale2d'],
+    toImageButtonOptions: { format: 'png', scale: 2, filename: 'power_dashboard' },
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HTML escaping helpers
+═══════════════════════════════════════════════════════════════════════════ */
+function esc(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return esc(s); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Event listeners
+═══════════════════════════════════════════════════════════════════════════ */
+['f-family','f-gpu','f-dtype','f-quant','f-exp'].forEach(id => {
+  document.getElementById(id).addEventListener('change', applyFilters);
+});
+document.getElementById('f-search').addEventListener('input', applyFilters);
+
+// Resize observer: keep Plotly charts sized correctly
+if (window.ResizeObserver) {
+  const ro = new ResizeObserver(() => {
+    const active = document.querySelector('.tab-panel.active');
+    if (!active) return;
+    if (active.id === 'tab-explorer')   Plotly.Plots.resize(document.getElementById('explorer-plot'));
+    if (active.id === 'tab-comparison') Plotly.Plots.resize(document.getElementById('comp-chart'));
+  });
+  ro.observe(document.getElementById('main'));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Boot
+═══════════════════════════════════════════════════════════════════════════ */
+loadData();
+</script>
+</body>
+</html>
