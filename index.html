@@ -40,6 +40,10 @@
   .stat-chip.sust { background: #e6fff0; color: #007733; }
   .badge-heur { color: #888; font-style: italic; font-size: 0.65rem; }
   .badge-fail { color: #c00; font-size: 0.65rem; }
+  .tag-prompt { display:inline-block; border-radius:10px; padding:1px 6px; font-size:0.65rem; margin-top:3px; }
+  .tag-prompt.tag-green  { background:#e6fff0; color:#007733; }
+  .tag-prompt.tag-gray   { background:#eee;    color:#555;    }
+  .tag-prompt.tag-yellow { background:#fff8e1; color:#a06800; }
   /* Modal */
   #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6);
              z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 30px; }
@@ -228,6 +232,45 @@ function fmtIOLine(r) {
   return `${inp} → ${out} · ${bs}`;
 }
 
+// ── prompt content provenance ─────────────────────────────────────────────────
+// Most runs in this dataset predate prompt-content tracking (pre-exp8/exp10);
+// prompt_type/prompt_source are read if present so newer data slots in for free.
+function promptInfo(r) {
+  if (r.prompt_type) {
+    return {
+      type: r.prompt_type,
+      source: r.prompt_source || null,
+      verified: true,
+      known: true,
+    };
+  }
+  if (/exp10/i.test(r.source || '') || /real_text/i.test(r.run_id || '')) {
+    return { type: 'real_text', source: 'Wikipedia, 512 tok, verified', verified: true, known: true };
+  }
+  if (/exp8/i.test(r.source || '')) {
+    return { type: 'prompt_content_study', source: null, verified: true, known: true };
+  }
+  return { type: 'random_tokens', source: null, verified: false, known: false };
+}
+
+function promptBadge(r) {
+  const pi = promptInfo(r);
+  if (!pi.known) return { cls: 'tag-yellow', label: '⚠️ unknown' };
+  if (pi.type === 'random_tokens') return { cls: 'tag-gray', label: 'random_tokens' };
+  return { cls: 'tag-green', label: pi.type };
+}
+
+function promptModalText(r) {
+  const pi = promptInfo(r);
+  const typeText = pi.known
+    ? pi.type
+    : `random_tokens (unverified — old ${r.source || 'batch_sweep'} run)`;
+  const sourceText = pi.known
+    ? (pi.source || '—')
+    : '⚠️ prompt content not recorded';
+  return { typeText, sourceText };
+}
+
 function mv(v, unit='') {
   if (v === null || v === undefined || v === '' || v === '—') return '—';
   return unit ? v + ' ' + unit : String(v);
@@ -318,6 +361,7 @@ function renderGallery() {
     const sustBadge = isSust ? '<span class="stat-chip sust">sustained</span>' : '';
     const failBadge = isFailed ? '<span class="badge-fail">⚠ no completions</span>' : '';
     const tpBadge   = r.tp_degree > 1 ? `TP${r.tp_degree}` : '';
+    const pBadge    = promptBadge(r);
 
     card.innerHTML = `
       <div class="card-thumb"><img src="${r.png_rel}" alt="${r.run_id}" loading="lazy"></div>
@@ -325,6 +369,7 @@ function renderGallery() {
         <div class="card-title">${r.model_short} · ${r.gpu_type} ${tpBadge} · ${qShort}</div>
         <div class="card-meta">${r.source} ${archBadge} ${sustBadge}</div>
         <div class="card-io">${fmtIOLine(r)}</div>
+        <span class="tag-prompt ${pBadge.cls}">${pBadge.label}</span>
         <div class="card-stats">
           <span class="stat-chip">${fmtVal(r.avg_power_W, 'W')}</span>
           <span class="stat-chip">${fmtVal(r.energy_per_token_mJ, 'mJ/tok')}</span>
@@ -348,6 +393,7 @@ function openModal(idx) {
 
   // ── expanded metadata panel ──
   const _pm = parseRunMeta(r);
+  const _pt = promptModalText(r);
   document.getElementById('modal-meta-panel').innerHTML = `
     <div class="mmp-grid">
       <div class="mmp-kv"><span class="mk">Model</span><span class="mv">${r.model_short || '—'}</span></div>
@@ -360,6 +406,8 @@ function openModal(idx) {
       <div class="mmp-kv"><span class="mk">Output tokens</span><span class="mv">${_pm.output_len || '—'}</span></div>
       <div class="mmp-kv"><span class="mk">Batch size</span><span class="mv">${_pm.batch_size || '—'}</span></div>
       <div class="mmp-kv"><span class="mk">Concurrency</span><span class="mv">—</span></div>
+      <div class="mmp-kv"><span class="mk">Prompt type</span><span class="mv">${_pt.typeText}</span></div>
+      <div class="mmp-kv"><span class="mk">Prompt source</span><span class="mv">${_pt.sourceText}</span></div>
     </div>
     <hr class="mmp-sep">
     <div class="mmp-grid">
@@ -456,6 +504,7 @@ function openModal(idx) {
   } else {
     // Burst probe: phase-shaded
     const shapes = [];
+    const annotations = [];
     trace.phases.forEach(ph => {
       shapes.push({
         type: 'rect', xref: 'x', yref: 'paper',
@@ -464,7 +513,9 @@ function openModal(idx) {
         opacity: 0.45, line: { width: 0 }, layer: 'below'
       });
     });
-    // Prefill / decode sub-phase shading within each inference region
+    // Prefill / decode sub-phase shading within each inference region.
+    // TTFT is recorded in ms; the trace x-axis is in seconds, so it must be
+    // divided by 1000 before it's used as an x-coordinate on this chart.
     if (r.ttft_p50_ms) {
       const ttft_s = r.ttft_p50_ms / 1000;
       trace.phases.forEach(ph => {
@@ -489,6 +540,31 @@ function openModal(idx) {
           type: 'line', xref: 'x', yref: 'paper',
           x0: prefillEnd, x1: prefillEnd, y0: 0, y1: 1,
           line: {dash: 'dash', color: '#bf360c', width: 1.5}
+        });
+        // TTFT is usually tens of ms against a chart spanning tens of seconds,
+        // so the amber region alone can be sub-pixel wide — always add a text
+        // annotation at the boundary so prefill/decode is legible regardless.
+        const decodeS = Math.max(ph.t_end - prefillEnd, 0);
+        annotations.push({
+          x: prefillEnd, y: 1, yref: 'paper', yanchor: 'bottom',
+          xanchor: 'left',
+          text: `Prefill: ${r.ttft_p50_ms.toFixed(0)}ms | Decode: ${decodeS.toFixed(1)}s`,
+          showarrow: true, arrowhead: 2, arrowsize: 0.8, ax: 30, ay: -18,
+          font: { size: 10, color: '#bf360c' },
+          bgcolor: 'rgba(255,255,255,0.85)', bordercolor: '#bf360c', borderwidth: 1
+        });
+      });
+    } else {
+      // No TTFT was ever recorded for this run (e.g. old HF-backend batch_sweep
+      // probes predate token-level timing) — say so rather than silently
+      // showing no prefill/decode shading with no explanation.
+      trace.phases.forEach(ph => {
+        if (ph.phase !== 'inference') return;
+        annotations.push({
+          x: (ph.t_start + ph.t_end) / 2, y: 1, yref: 'paper', yanchor: 'bottom',
+          text: 'TTFT not recorded for this run',
+          showarrow: false, font: { size: 10, color: '#888' },
+          bgcolor: 'rgba(255,255,255,0.85)', bordercolor: '#ccc', borderwidth: 1
         });
       });
     }
@@ -534,6 +610,7 @@ function openModal(idx) {
 
     Plotly.newPlot(pDiv, mainTraces, {
       shapes: shapes,
+      annotations: annotations,
       xaxis: { title: 'Time (s)' },
       yaxis: { title: 'GPU Power (W)' },
       margin: { t: 30, b: 50, l: 60, r: 20 },
