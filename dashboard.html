@@ -598,6 +598,10 @@ tbody tr:hover td { background: var(--accent-bg); }
           <!-- Right: chart + table -->
           <div id="comp-right">
             <div id="comp-chart-wrap">
+              <label id="comp-prefill-toggle" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);padding:2px 0 6px">
+                <input type="checkbox" id="show-prefill-points" onchange="updateComparison()">
+                Overlay point-in-time prefill markers (v2 runs only — vLLM server histogram deltas, not TTFT)
+              </label>
               <div id="comp-chart"></div>
             </div>
             <div id="comp-empty">Select runs from the list to overlay their power traces</div>
@@ -612,6 +616,7 @@ tbody tr:hover td { background: var(--accent-bg); }
                     <th>Throughput (tok/s)</th>
                     <th>TTFT p50 (ms)</th>
                     <th>TTFT p99 (ms)</th>
+                    <th title="Point-in-time prefill compute time from vLLM's own server-side histogram deltas — NOT derived from TTFT, which also includes queue wait + network + scheduler overhead. v2 runs only.">True Prefill (ms) ⓘ</th>
                     <th>TPOT p50 (ms)</th>
                     <th>TPOT p99 (ms)</th>
                     <th>Power (W)</th>
@@ -656,6 +661,7 @@ const FIELD_LABEL = {
   ttft_p50_ms:         'TTFT p50 (ms)',
   tpot_p50_ms:         'TPOT p50 (ms)',
   power_mean_w:        'Power Mean (W)',
+  true_prefill_time_ms: 'True Prefill (ms, point-in-time)',
   gpu_type:            'GPU Type',
   model_family:        'Model Family',
   dtype:               'dtype',
@@ -711,7 +717,10 @@ function normalizeRun(r) {
   // Coerce numerics
   ['param_size_b','batch_size','concurrency','context_len','gpu_memory_util',
    'energy_per_token_mj','throughput_tok_s','ttft_p50_ms','ttft_p99_ms',
-   'tpot_p50_ms','tpot_p99_ms','power_mean_w','tp_size','n_gpus','n_instances']
+   'tpot_p50_ms','tpot_p99_ms','power_mean_w','tp_size','n_gpus','n_instances',
+   'true_prefill_time_ms','true_prefill_time_ms_min','true_prefill_time_ms_max',
+   'true_prefill_time_ms_std','ttft_vs_true_prefill_ratio_mean',
+   'true_decode_time_ms','true_queue_wait_ms']
     .forEach(f => { n[f] = num(n[f]); });
 
   // has_trace fallback (old format embeds trace inline)
@@ -849,6 +858,7 @@ function renderExplorer() {
         ept:       r.energy_per_token_mj != null ? r.energy_per_token_mj.toFixed(2) : '—',
         tput:      r.throughput_tok_s    != null ? (+r.throughput_tok_s).toFixed(1)  : '—',
         ttft50:    r.ttft_p50_ms         != null ? r.ttft_p50_ms.toFixed(1)          : '—',
+        prefill:   r.true_prefill_time_ms != null ? r.true_prefill_time_ms.toFixed(1) : '—',
         tpot50:    r.tpot_p50_ms         != null ? r.tpot_p50_ms.toFixed(2)          : '—',
         pw:        r.power_mean_w        != null ? r.power_mean_w.toFixed(1)         : '—',
         batch:     r.batch_size     ?? '—',
@@ -866,6 +876,7 @@ function renderExplorer() {
         'EPT: <b>%{customdata.ept}</b> mJ/tok<br>' +
         'Throughput: <b>%{customdata.tput}</b> tok/s<br>' +
         'TTFT p50: %{customdata.ttft50} ms<br>' +
+        'True Prefill (pt-in-time): %{customdata.prefill} ms<br>' +
         'TPOT p50: %{customdata.tpot50} ms<br>' +
         'Power: %{customdata.pw} W<br>' +
         '<span style="color:#888">────────────────────</span><br>' +
@@ -1028,6 +1039,22 @@ async function updateComparison() {
       x: ts, y: pw, type: 'scatter', mode: 'lines',
       name: label, line: { color, width: 1.5 },
     });
+
+    // Point-in-time prefill markers (v2 runs): each point is the mean
+    // prefill duration of the batch of requests whose prefill finished in
+    // that ~100ms poll tick, from vLLM's server-side histogram deltas —
+    // never derived from TTFT. Plotted on a separate y-axis (ms) so it
+    // reads independently of the power line.
+    const showPrefill = document.getElementById('show-prefill-points')?.checked;
+    if (showPrefill && tc.prefill_points && tc.prefill_points.t && tc.prefill_points.t.length) {
+      chartTraces.push({
+        x: tc.prefill_points.t, y: tc.prefill_points.ms,
+        type: 'scatter', mode: 'markers', yaxis: 'y2',
+        name: label + ' · prefill (pt-in-time)',
+        marker: { color, size: 6, symbol: 'diamond-open', line: { width: 1.5, color } },
+        hovertemplate: 'prefill %{y:.1f} ms<br>t=%{x:.1f}s<extra></extra>',
+      });
+    }
   });
 
   const paper = darkMode ? '#1E293B' : '#FFFFFF';
@@ -1049,10 +1076,15 @@ async function updateComparison() {
   compTable.hidden = false;
 
   if (chartTraces.length) {
+    const showPrefillAxis = document.getElementById('show-prefill-points')?.checked;
     Plotly.react(compChartEl, chartTraces, {
       shapes,
       xaxis: { title: 'Time (s)', gridcolor: grid },
       yaxis: { title: 'Total Power (W)', gridcolor: grid },
+      yaxis2: showPrefillAxis ? {
+        title: 'Prefill (ms, point-in-time)', overlaying: 'y', side: 'right',
+        gridcolor: grid, rangemode: 'tozero',
+      } : undefined,
       paper_bgcolor: paper, plot_bgcolor: paper,
       font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
               color: darkMode ? '#F1F5F9' : '#1E293B', size: 12 },
@@ -1085,6 +1117,7 @@ async function updateComparison() {
         <td>${fmt(r.throughput_tok_s, 1)}</td>
         <td>${fmt(r.ttft_p50_ms, 1)}</td>
         <td>${fmt(r.ttft_p99_ms, 1)}</td>
+        <td>${fmt(r.true_prefill_time_ms, 1)}</td>
         <td>${fmt(r.tpot_p50_ms, 2)}</td>
         <td>${fmt(r.tpot_p99_ms, 2)}</td>
         <td>${fmt(r.power_mean_w, 1)}</td>
@@ -1215,8 +1248,11 @@ function exportCSV() {
     'tp_size','dtype','quantization','experiment_group',
     'batch_size','concurrency','context_len','gpu_memory_util','n_gpus','n_instances',
     'energy_per_token_mj','throughput_tok_s',
-    'ttft_p50_ms','ttft_p99_ms','tpot_p50_ms','tpot_p99_ms',
-    'power_mean_w','has_trace','summary_only',
+    'ttft_p50_ms','ttft_p99_ms',
+    'true_prefill_time_ms','true_prefill_time_ms_min','true_prefill_time_ms_max',
+    'ttft_vs_true_prefill_ratio_mean','true_decode_time_ms','true_queue_wait_ms',
+    'tpot_p50_ms','tpot_p99_ms',
+    'power_mean_w','has_trace','summary_only','v2','data_quality',
   ];
 
   const csvLines = [COLS.join(',')];
