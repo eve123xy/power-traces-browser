@@ -386,6 +386,54 @@ function openModal(idx) {
       });
     });
 
+    // Prefill/decode sub-phase shading within each inference region (v2
+    // runs only, which have a real true_prefill_ms -- see
+    // v2_harness/convert_v2_to_browser_json.py). The boundary is a MEAN
+    // (ttft_mean_ms - queue_wait_ms, the same true_prefill_ms shown in the
+    // modal detail panel and used in the energy split -- not TTFT p50, so
+    // it stays consistent with those numbers elsewhere on this page). At
+    // concurrency > 1 this is not a literal event: prefill and decode
+    // overlap in wall-clock time across concurrent requests under
+    // continuous batching, so the line marks the mean, not a boundary any
+    // single request actually crosses.
+    const pitAnnotations = [];
+    if (r.v2 && r.true_prefill_ms != null) {
+      trace.phases.forEach(ph => {
+        if (ph.phase !== 'inference') return;
+        const prefillEnd = Math.min(ph.t_start + r.true_prefill_ms / 1000, ph.t_end);
+        const decodeS = ph.t_end - prefillEnd;
+        shapes.push({
+          type: 'rect', xref: 'x', yref: 'paper',
+          x0: ph.t_start, x1: prefillEnd, y0: 0, y1: 1,
+          fillcolor: '#ffb74d', opacity: 0.5, line: { width: 0 }, layer: 'below'
+        });
+        if (prefillEnd < ph.t_end) {
+          shapes.push({
+            type: 'rect', xref: 'x', yref: 'paper',
+            x0: prefillEnd, x1: ph.t_end, y0: 0, y1: 1,
+            fillcolor: '#64b5f6', opacity: 0.35, line: { width: 0 }, layer: 'below'
+          });
+        }
+        shapes.push({
+          type: 'line', xref: 'x', yref: 'paper',
+          x0: prefillEnd, x1: prefillEnd, y0: 0, y1: 1,
+          line: { dash: 'dash', color: '#bf360c', width: 1.5 }
+        });
+        pitAnnotations.push({
+          x: prefillEnd, y: 1, xref: 'x', yref: 'paper', yanchor: 'bottom',
+          text: `Prefill: ${r.true_prefill_ms.toFixed(0)}ms | Decode: ${decodeS.toFixed(1)}s`,
+          showarrow: false, font: { size: 10, color: '#bf360c' }
+        });
+      });
+      if ((r.concurrency || 0) >= 8) {
+        pitAnnotations.push({
+          x: 0.5, y: 1, xref: 'paper', yref: 'paper', yanchor: 'bottom', yshift: 16,
+          text: `Note: at c=${r.concurrency}, prefill/decode phases overlap across concurrent requests — boundary shown is mean TTFT`,
+          showarrow: false, font: { size: 9, color: '#888' }
+        });
+      }
+    }
+
     const infPts = trace.ts.filter((_, i) => trace.phases.some(
       ph => ph.phase === 'inference' && trace.ts[i] >= ph.t_start && trace.ts[i] <= ph.t_end));
     const infPw = trace.pw.filter((_, i) => trace.phases.some(
@@ -413,12 +461,23 @@ function openModal(idx) {
         marker:{symbol:'square',size:10,color:PHASE_COLORS[ph]},
         name: PHASE_LABELS[ph], showlegend:true });
     });
+    if (r.v2 && r.true_prefill_ms != null) {
+      mainTraces.push(
+        { x:[null], y:[null], type:'scatter', mode:'markers',
+          marker:{symbol:'square',size:10,color:'#ffb74d'},
+          name:'Prefill (mean, approx.)', showlegend:true },
+        { x:[null], y:[null], type:'scatter', mode:'markers',
+          marker:{symbol:'square',size:10,color:'#64b5f6'},
+          name:'Decode', showlegend:true }
+      );
+    }
 
     Plotly.newPlot(pDiv, mainTraces, {
       shapes: shapes,
+      annotations: pitAnnotations,
       xaxis: { title: 'Time (s)' },
       yaxis: { title: 'GPU Power (W)' },
-      margin: { t: 30, b: 50, l: 60, r: 20 },
+      margin: { t: pitAnnotations.length ? 50 : 30, b: 50, l: 60, r: 20 },
       hovermode: 'x unified', legend: { x:1, xanchor:'right', font:{size:10} }
     }, { responsive: true, displayModeBar: false });
 
