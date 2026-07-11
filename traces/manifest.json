@@ -495,7 +495,8 @@
     "true_decode_time_ms": 1612.9637408114559,
     "true_queue_wait_ms": 0.005881895669962496,
     "prefill_energy_per_token_mj": 1.4725946712881317,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c1_in512_out256_13220960",
@@ -573,7 +574,8 @@
     "true_decode_time_ms": 1642.645438005204,
     "true_queue_wait_ms": 0.02766999132697311,
     "prefill_energy_per_token_mj": 0.8521854804294942,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c4_in512_out256_13220968",
@@ -612,7 +614,8 @@
     "true_decode_time_ms": 1516.0251398457583,
     "true_queue_wait_ms": 0.005483290488431877,
     "prefill_energy_per_token_mj": 4.942372033758916,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c8_in128_out256_13220971",
@@ -651,7 +654,8 @@
     "true_decode_time_ms": 1527.5504782664943,
     "true_queue_wait_ms": 0.007009896507115136,
     "prefill_energy_per_token_mj": 9.366599137713676,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c8_in2048_out256_13220972",
@@ -690,7 +694,8 @@
     "true_decode_time_ms": 1605.8273045859,
     "true_queue_wait_ms": 0.019257015742642027,
     "prefill_energy_per_token_mj": 0.9626956557050512,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c8_in512_out1024_13220976",
@@ -729,7 +734,8 @@
     "true_decode_time_ms": 6212.415153805774,
     "true_queue_wait_ms": 0.005817847769028872,
     "prefill_energy_per_token_mj": 2.890732756462599,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c8_in512_out256_13220981",
@@ -768,7 +774,8 @@
     "true_decode_time_ms": 1540.9813885620913,
     "true_queue_wait_ms": 0.006959607843137254,
     "prefill_energy_per_token_mj": 2.677302023762026,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H100_bf16_tp1_c8_in512_out64_13220983",
@@ -807,7 +814,8 @@
     "true_decode_time_ms": 386.5007022629864,
     "true_queue_wait_ms": 0.005501954397394137,
     "prefill_energy_per_token_mj": 2.55716575393441,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H200_fp16_tp1_c16_in512_out256_13222302",
@@ -846,7 +854,8 @@
     "true_decode_time_ms": 1268.9508006467258,
     "true_queue_wait_ms": 0.005199838318512531,
     "prefill_energy_per_token_mj": 1.719490717346653,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H200_fp16_tp1_c1_in512_out256_13222304",
@@ -924,7 +933,8 @@
     "true_decode_time_ms": 1329.3622165376494,
     "true_queue_wait_ms": 0.005157494722026742,
     "prefill_energy_per_token_mj": 0.8537106829099232,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H200_fp16_tp1_c4_in512_out256_13222308",
@@ -963,7 +973,8 @@
     "true_decode_time_ms": 1210.3922683076923,
     "true_queue_wait_ms": 0.0050267692307692305,
     "prefill_energy_per_token_mj": 4.3005681874103905,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H200_fp16_tp1_c8_in128_out256_13222318",
@@ -1002,7 +1013,8 @@
     "true_decode_time_ms": 1242.070586203265,
     "true_queue_wait_ms": 0.0050313849394418115,
     "prefill_energy_per_token_mj": 9.328193700518932,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H200_fp16_tp1_c8_in2048_out256_13222325",
@@ -1041,7 +1053,8 @@
     "true_decode_time_ms": 1295.7317426762113,
     "true_queue_wait_ms": 0.00451420704845815,
     "prefill_energy_per_token_mj": 0.8061953619483613,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_H200_fp16_tp1_c8_in512_out256_13222317",
@@ -1080,7 +1093,8 @@
     "true_decode_time_ms": 1250.2800038135592,
     "true_queue_wait_ms": 0.004831197033898305,
     "prefill_energy_per_token_mj": 2.5426626171077684,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "deepseek_r1_7b_tp1_H100_bf16_11180005",
@@ -4425,7 +4439,8 @@
     "true_decode_time_ms": 5402.800206908268,
     "true_queue_wait_ms": 0.00855458663646659,
     "prefill_energy_per_token_mj": 13.687246769896582,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama70b_H200_fp16_tp2_c1_in512_out256_13072824",
@@ -4503,7 +4518,8 @@
     "true_decode_time_ms": 5586.964284869977,
     "true_queue_wait_ms": 0.011944267139479907,
     "prefill_energy_per_token_mj": 8.259691926655695,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama70b_H200_fp16_tp2_c4_in512_out256_13072826",
@@ -4542,7 +4558,8 @@
     "true_decode_time_ms": 5316.0616375565605,
     "true_queue_wait_ms": 0.008488235294117647,
     "prefill_energy_per_token_mj": 53.37992076838231,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama70b_H200_fp16_tp2_c8_in128_out256_13220924",
@@ -4581,7 +4598,8 @@
     "true_decode_time_ms": 5364.599704761905,
     "true_queue_wait_ms": 0.007882766439909298,
     "prefill_energy_per_token_mj": 71.29376401506785,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama70b_H200_fp16_tp2_c8_in2048_out256_13220937",
@@ -4620,7 +4638,8 @@
     "true_decode_time_ms": 5642.4500172749395,
     "true_queue_wait_ms": 0.005273479318734794,
     "prefill_energy_per_token_mj": 12.091809751715635,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama70b_H200_fp16_tp2_c8_in512_out256_13072827",
@@ -4659,7 +4678,8 @@
     "true_decode_time_ms": 5330.216852477478,
     "true_queue_wait_ms": 0.008130405405405406,
     "prefill_energy_per_token_mj": 22.868252042163647,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c16_in512_out256_13072834",
@@ -4698,7 +4718,8 @@
     "true_decode_time_ms": 1302.3598754983389,
     "true_queue_wait_ms": 0.005862929125138428,
     "prefill_energy_per_token_mj": 1.171867134175392,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c1_in512_out256_13072835",
@@ -4776,7 +4797,8 @@
     "true_decode_time_ms": 1525.8604589747736,
     "true_queue_wait_ms": 0.005791575032341526,
     "prefill_energy_per_token_mj": 0.7093167422409945,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c4_in512_out256_13072851",
@@ -4815,7 +4837,8 @@
     "true_decode_time_ms": 1211.0111321685508,
     "true_queue_wait_ms": 0.005201027749229188,
     "prefill_energy_per_token_mj": 3.644184042227856,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c8_in128_out256_13072853",
@@ -4854,7 +4877,8 @@
     "true_decode_time_ms": 1210.6340365128206,
     "true_queue_wait_ms": 0.005374,
     "prefill_energy_per_token_mj": 6.377937410567359,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c8_in2048_out256_13072854",
@@ -4893,7 +4917,8 @@
     "true_decode_time_ms": 1379.371648707403,
     "true_queue_wait_ms": 0.005788307873090481,
     "prefill_energy_per_token_mj": 0.8006581092811136,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c8_in512_out1024_13220955",
@@ -4932,7 +4957,8 @@
     "true_decode_time_ms": 5105.418043829787,
     "true_queue_wait_ms": 0.005500425531914894,
     "prefill_energy_per_token_mj": 2.409646750325528,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c8_in512_out256_13072857",
@@ -4971,7 +4997,8 @@
     "true_decode_time_ms": 1212.6313787965616,
     "true_queue_wait_ms": 0.007122922636103152,
     "prefill_energy_per_token_mj": 1.7470744208230524,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama8b_gptq_H100_int4_gptq_tp1_c8_in512_out64_13072858",
@@ -5010,7 +5037,8 @@
     "true_decode_time_ms": 305.83314388185653,
     "true_queue_wait_ms": 0.004408956036477474,
     "prefill_energy_per_token_mj": 1.7286484769814463,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_1b_tp1_H100_bf16_11161675",
@@ -5256,7 +5284,8 @@
     "true_decode_time_ms": 1073.489095928376,
     "true_queue_wait_ms": 0.006340066149635036,
     "prefill_energy_per_token_mj": 0.6070051129331778,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_H100_bf16_tp1_c4_in512_out256_13221679",
@@ -5295,7 +5324,8 @@
     "true_decode_time_ms": 874.7649180534918,
     "true_queue_wait_ms": 0.005003714710252601,
     "prefill_energy_per_token_mj": 2.9574193223989065,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_H100_bf16_tp1_c8_in128_out256_13221683",
@@ -5334,7 +5364,8 @@
     "true_decode_time_ms": 851.7144568747743,
     "true_queue_wait_ms": 0.00559642728256947,
     "prefill_energy_per_token_mj": 5.502092653240063,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_H100_bf16_tp1_c8_in2048_out256_13221684",
@@ -5373,7 +5404,8 @@
     "true_decode_time_ms": 1026.29738659071,
     "true_queue_wait_ms": 0.0056595092024539885,
     "prefill_energy_per_token_mj": 0.6467460957349075,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_H100_bf16_tp1_c8_in512_out1024_13221689",
@@ -5412,7 +5444,8 @@
     "true_decode_time_ms": 3775.6686806349207,
     "true_queue_wait_ms": 0.0061187301587301585,
     "prefill_energy_per_token_mj": 1.7678678755576909,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_H100_bf16_tp1_c8_in512_out256_13221690",
@@ -5451,7 +5484,8 @@
     "true_decode_time_ms": 880.4852172152856,
     "true_queue_wait_ms": 0.005533219825955353,
     "prefill_energy_per_token_mj": 1.6621357122815879,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_H100_bf16_tp1_c8_in512_out64_13221693",
@@ -5490,7 +5524,8 @@
     "true_decode_time_ms": 223.17708078356333,
     "true_queue_wait_ms": 0.005869171114915903,
     "prefill_energy_per_token_mj": 1.648872517351402,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c16_in512_out256_13222271",
@@ -5529,7 +5564,8 @@
     "true_decode_time_ms": 1759.0828240477967,
     "true_queue_wait_ms": 0.188682785660941,
     "prefill_energy_per_token_mj": 1.8810833142392482,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c1_in512_out256_13222273",
@@ -5607,7 +5643,8 @@
     "true_decode_time_ms": 2118.525918829573,
     "true_queue_wait_ms": 0.7654019879383516,
     "prefill_energy_per_token_mj": 1.129825527689064,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c4_in512_out256_13222279",
@@ -5646,7 +5683,8 @@
     "true_decode_time_ms": 1511.1402577120823,
     "true_queue_wait_ms": 0.004221336760925449,
     "prefill_energy_per_token_mj": 6.904026213457979,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c8_in128_out256_13222284",
@@ -5685,7 +5723,8 @@
     "true_decode_time_ms": 1526.7241220207254,
     "true_queue_wait_ms": 0.004345466321243523,
     "prefill_energy_per_token_mj": 12.254694892414506,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c8_in2048_out256_13222285",
@@ -5724,7 +5763,8 @@
     "true_decode_time_ms": 1846.792513057076,
     "true_queue_wait_ms": 1.2851807662236123,
     "prefill_energy_per_token_mj": 1.2996472117628082,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c8_in512_out1024_13222291",
@@ -5763,7 +5803,8 @@
     "true_decode_time_ms": 6638.825801685393,
     "true_queue_wait_ms": 0.3277188202247191,
     "prefill_energy_per_token_mj": 4.602830451869603,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_L40S_bf16_tp2_c8_in512_out256_13222296",
@@ -5802,7 +5843,8 @@
     "true_decode_time_ms": 1592.9699347297296,
     "true_queue_wait_ms": 0.004078445945945946,
     "prefill_energy_per_token_mj": 3.262966958164301,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_3b_tp1_H100_bf16_11161667",
@@ -6177,7 +6219,8 @@
     "true_decode_time_ms": 7428.844680710659,
     "true_queue_wait_ms": 0.01222859560067682,
     "prefill_energy_per_token_mj": 86.56866272881933,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c1_in512_out256_13221994",
@@ -6255,7 +6298,8 @@
     "true_decode_time_ms": 7974.870617682318,
     "true_queue_wait_ms": 0.7177564435564435,
     "prefill_energy_per_token_mj": 103.69556626575739,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c4_in512_out256_13221998",
@@ -6294,7 +6338,8 @@
     "true_decode_time_ms": 6931.447784242425,
     "true_queue_wait_ms": 0.0050472727272727275,
     "prefill_energy_per_token_mj": 94.262548439257,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c8_in128_out256_13222021",
@@ -6333,7 +6378,8 @@
     "true_decode_time_ms": 6875.873722898551,
     "true_queue_wait_ms": 0.009071014492753623,
     "prefill_energy_per_token_mj": 73.60873522577593,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c8_in2048_out256_13222022",
@@ -6372,7 +6418,8 @@
     "true_decode_time_ms": 7809.822684674329,
     "true_queue_wait_ms": 0.3099494252873563,
     "prefill_energy_per_token_mj": 85.4094646859163,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c8_in512_out1024_13222026",
@@ -6411,7 +6458,8 @@
     "true_decode_time_ms": 27411.78264567901,
     "true_queue_wait_ms": 0.008602469135802468,
     "prefill_energy_per_token_mj": 81.34635348256013,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c8_in512_out256_13222030",
@@ -6450,7 +6498,8 @@
     "true_decode_time_ms": 7091.270997435898,
     "true_queue_wait_ms": 0.010119871794871794,
     "prefill_energy_per_token_mj": 98.16052361323206,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp16_tp2_c8_in512_out64_13222035",
@@ -6489,7 +6538,8 @@
     "true_decode_time_ms": 1739.1460750932836,
     "true_queue_wait_ms": 0.012433955223880596,
     "prefill_energy_per_token_mj": 128.12105018276546,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp8_tp2_c32_in512_out256_13222043",
@@ -6528,7 +6578,8 @@
     "true_decode_time_ms": 4782.336747453353,
     "true_queue_wait_ms": 0.011137266767523954,
     "prefill_energy_per_token_mj": 5.161995009508971,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp8_tp2_c8_in128_out256_13222053",
@@ -6567,7 +6618,8 @@
     "true_decode_time_ms": 4142.706699649737,
     "true_queue_wait_ms": 0.007827320490367776,
     "prefill_energy_per_token_mj": 42.595136313377594,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp8_tp2_c8_in2048_out256_13222139",
@@ -6606,7 +6658,8 @@
     "true_decode_time_ms": 4413.382828219696,
     "true_queue_wait_ms": 0.004719886363636364,
     "prefill_energy_per_token_mj": 7.177868091925356,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp8_tp2_c8_in512_out1024_13222141",
@@ -6645,7 +6698,8 @@
     "true_decode_time_ms": 16912.83365285714,
     "true_queue_wait_ms": 0.0072364285714285725,
     "prefill_energy_per_token_mj": 28.381277177202946,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp8_tp2_c8_in512_out256_13222150",
@@ -6684,7 +6738,8 @@
     "true_decode_time_ms": 4195.70863221239,
     "true_queue_wait_ms": 0.00613646017699115,
     "prefill_energy_per_token_mj": 15.49116952293399,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_H100_fp8_tp2_c8_in512_out64_13222151",
@@ -6723,7 +6778,8 @@
     "true_decode_time_ms": 1037.482011070615,
     "true_queue_wait_ms": 0.0060117539863325745,
     "prefill_energy_per_token_mj": 11.706614837523963,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_70b_tp2_H100_bf16_11161679",
@@ -7257,7 +7313,8 @@
     "true_decode_time_ms": 3000.8619175538656,
     "true_queue_wait_ms": 0.23522186311787072,
     "prefill_energy_per_token_mj": 2.24989703268245,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_A100_fp16_tp1_c1_in512_out256_13221748",
@@ -7335,7 +7392,8 @@
     "true_decode_time_ms": 3520.8972439613526,
     "true_queue_wait_ms": 1.7534891861761428,
     "prefill_energy_per_token_mj": 1.1347369868541732,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_A100_fp16_tp1_c8_in512_out256_13221981",
@@ -7374,7 +7432,8 @@
     "true_decode_time_ms": 2837.3266700239806,
     "true_queue_wait_ms": 0.009220143884892087,
     "prefill_energy_per_token_mj": 3.755717863503238,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_A100_fp16_tp1_c8_in512_out64_13221986",
@@ -7413,7 +7472,8 @@
     "true_decode_time_ms": 700.8514748543391,
     "true_queue_wait_ms": 0.019296780128794846,
     "prefill_energy_per_token_mj": 2.90598057982051,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c16_in512_out256_13221694",
@@ -7452,7 +7512,8 @@
     "true_decode_time_ms": 8727.538043761639,
     "true_queue_wait_ms": 0.01775214152700186,
     "prefill_energy_per_token_mj": 6.326950804043362,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c1_in512_out256_13221696",
@@ -7530,7 +7591,8 @@
     "true_decode_time_ms": 8922.446826597745,
     "true_queue_wait_ms": 0.05557753759398496,
     "prefill_energy_per_token_mj": 2.6663431591934352,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c4_in512_out256_13221700",
@@ -7569,7 +7631,8 @@
     "true_decode_time_ms": 8676.590654744525,
     "true_queue_wait_ms": 0.007167153284671533,
     "prefill_energy_per_token_mj": 19.313750273544844,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c8_in128_out256_13221706",
@@ -7608,7 +7671,8 @@
     "true_decode_time_ms": 8736.015111654135,
     "true_queue_wait_ms": 0.00841203007518797,
     "prefill_energy_per_token_mj": 35.61790301043514,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c8_in2048_out256_13221707",
@@ -7647,7 +7711,8 @@
     "true_decode_time_ms": 8954.346691085271,
     "true_queue_wait_ms": 0.584841472868217,
     "prefill_energy_per_token_mj": 3.1533726128865394,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c8_in512_out1024_13221711",
@@ -7686,7 +7751,8 @@
     "true_decode_time_ms": 34793.275658461534,
     "true_queue_wait_ms": 0.011567692307692308,
     "prefill_energy_per_token_mj": 12.690955750017618,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c8_in512_out256_13221712",
@@ -7725,7 +7791,8 @@
     "true_decode_time_ms": 8748.011090188678,
     "true_queue_wait_ms": 0.008394716981132077,
     "prefill_energy_per_token_mj": 9.586327731255343,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_H100_fp16_tp1_c8_in512_out64_13221715",
@@ -7764,7 +7831,8 @@
     "true_decode_time_ms": 2175.581693333333,
     "true_queue_wait_ms": 0.009941142857142857,
     "prefill_energy_per_token_mj": 9.16300964081718,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c16_in512_out256_13221717",
@@ -7803,7 +7871,8 @@
     "true_decode_time_ms": 2508.485231662269,
     "true_queue_wait_ms": 1.0656781530343007,
     "prefill_energy_per_token_mj": 1.761739441725749,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c1_in512_out256_13221718",
@@ -7881,7 +7950,8 @@
     "true_decode_time_ms": 3094.2154022178734,
     "true_queue_wait_ms": 2.4929217221135027,
     "prefill_energy_per_token_mj": 1.0188772699631339,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c4_in512_out256_13221720",
@@ -7920,7 +7990,8 @@
     "true_decode_time_ms": 2139.50948584392,
     "true_queue_wait_ms": 0.004822867513611615,
     "prefill_energy_per_token_mj": 5.284698609417204,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c8_in128_out256_13221722",
@@ -7959,7 +8030,8 @@
     "true_decode_time_ms": 2110.2991935226264,
     "true_queue_wait_ms": 0.004435226264418811,
     "prefill_energy_per_token_mj": 7.668592784563699,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c8_in2048_out256_13221725",
@@ -7998,7 +8070,8 @@
     "true_decode_time_ms": 2847.6041650485436,
     "true_queue_wait_ms": 2.0013158980582526,
     "prefill_energy_per_token_mj": 1.1887181467537316,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c8_in512_out1024_13221729",
@@ -8037,7 +8110,8 @@
     "true_decode_time_ms": 9580.868992946058,
     "true_queue_wait_ms": 0.006726970954356847,
     "prefill_energy_per_token_mj": 4.5461362174112,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c8_in512_out256_13221736",
@@ -8076,7 +8150,8 @@
     "true_decode_time_ms": 2238.277011516315,
     "true_queue_wait_ms": 0.0684067178502879,
     "prefill_energy_per_token_mj": 2.6614793212530174,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_L40S_fp16_tp1_c8_in512_out64_13221737",
@@ -8115,7 +8190,8 @@
     "true_decode_time_ms": 552.6527190880428,
     "true_queue_wait_ms": 0.008642929905408683,
     "prefill_energy_per_token_mj": 2.248197831660375,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "llama_8b_tp1_A100_bf16_11180115",
@@ -8825,7 +8901,8 @@
     "true_decode_time_ms": 2893.615603787416,
     "true_queue_wait_ms": 0.5582212583995113,
     "prefill_energy_per_token_mj": 1.8833717275981054,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_A100_fp16_tp1_c1_in512_out256_13222525",
@@ -8903,7 +8980,8 @@
     "true_decode_time_ms": 3402.2993824353443,
     "true_queue_wait_ms": 2.9612108117816094,
     "prefill_energy_per_token_mj": 1.0917976373815872,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_A100_fp16_tp1_c8_in2048_out256_13222541",
@@ -8942,7 +9020,8 @@
     "true_decode_time_ms": 3016.1969333333336,
     "true_queue_wait_ms": 3.327373487773488,
     "prefill_energy_per_token_mj": 1.4573604974503052,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_A100_fp16_tp1_c8_in512_out256_13222542",
@@ -8981,7 +9060,8 @@
     "true_decode_time_ms": 2734.664156184971,
     "true_queue_wait_ms": 0.007874219653179191,
     "prefill_energy_per_token_mj": 3.5031645594073395,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c16_in512_out256_13221267",
@@ -9020,7 +9100,8 @@
     "true_decode_time_ms": 1644.3117841280891,
     "true_queue_wait_ms": 0.005333623390184477,
     "prefill_energy_per_token_mj": 1.4661997252188348,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c1_in512_out256_13221268",
@@ -9098,7 +9179,8 @@
     "true_decode_time_ms": 1795.0592042735043,
     "true_queue_wait_ms": 0.006207768281101615,
     "prefill_energy_per_token_mj": 0.8982679795392198,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c4_in512_out256_13221270",
@@ -9137,7 +9219,8 @@
     "true_decode_time_ms": 1574.5436656875834,
     "true_queue_wait_ms": 0.005656608811748998,
     "prefill_energy_per_token_mj": 4.955612802338554,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c8_in128_out256_13221275",
@@ -9176,7 +9259,8 @@
     "true_decode_time_ms": 1544.7383182352942,
     "true_queue_wait_ms": 0.006347843137254902,
     "prefill_energy_per_token_mj": 9.220501415630782,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c8_in2048_out256_13221277",
@@ -9215,7 +9299,8 @@
     "true_decode_time_ms": 1706.9272603498541,
     "true_queue_wait_ms": 0.05879088921282798,
     "prefill_energy_per_token_mj": 1.1191418092802716,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c8_in512_out1024_13221281",
@@ -9254,7 +9339,8 @@
     "true_decode_time_ms": 6366.663009358289,
     "true_queue_wait_ms": 0.006238235294117647,
     "prefill_energy_per_token_mj": 3.2293788865434805,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c8_in512_out256_13221283",
@@ -9293,7 +9379,8 @@
     "true_decode_time_ms": 1581.6074887919463,
     "true_queue_wait_ms": 0.006385771812080537,
     "prefill_energy_per_token_mj": 2.573898831238787,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_H100_fp16_tp1_c8_in512_out64_13221284",
@@ -9332,7 +9419,8 @@
     "true_decode_time_ms": 380.3753286726261,
     "true_queue_wait_ms": 0.005082222971833361,
     "prefill_energy_per_token_mj": 2.5380463989367317,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mistral7b_tp1_A100_fp16_10887512",
@@ -9763,7 +9851,8 @@
     "true_decode_time_ms": 4399.175257328387,
     "true_queue_wait_ms": 0.010021799628942486,
     "prefill_energy_per_token_mj": 9.132046010482304,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c1_in512_out256_13072885",
@@ -9841,7 +9930,8 @@
     "true_decode_time_ms": 4597.282187968826,
     "true_queue_wait_ms": 0.009466049683390161,
     "prefill_energy_per_token_mj": 5.629250790497393,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c4_in512_out256_13072888",
@@ -9880,7 +9970,8 @@
     "true_decode_time_ms": 3185.6576485175206,
     "true_queue_wait_ms": 0.003917789757412399,
     "prefill_energy_per_token_mj": 19.695934497307668,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c8_in128_out256_13220956",
@@ -9919,7 +10010,8 @@
     "true_decode_time_ms": 3999.889505695142,
     "true_queue_wait_ms": 0.006243886097152428,
     "prefill_energy_per_token_mj": 41.29528264283148,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c8_in2048_out256_13072899",
@@ -9958,7 +10050,8 @@
     "true_decode_time_ms": 4084.966644599303,
     "true_queue_wait_ms": 0.005337630662020906,
     "prefill_energy_per_token_mj": 5.506681100939338,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c8_in512_out1024_13072911",
@@ -9997,7 +10090,8 @@
     "true_decode_time_ms": 15511.57016794872,
     "true_queue_wait_ms": 0.008042307692307692,
     "prefill_energy_per_token_mj": 28.497071824977212,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c8_in512_out256_13072917",
@@ -10036,7 +10130,8 @@
     "true_decode_time_ms": 3989.7471809364547,
     "true_queue_wait_ms": 0.005468561872909699,
     "prefill_energy_per_token_mj": 12.023569666249244,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "mixtral8x7b_H100_fp16_tp2_c8_in512_out64_13072918",
@@ -10075,7 +10170,8 @@
     "true_decode_time_ms": 989.738689731369,
     "true_queue_wait_ms": 0.0063229202772963605,
     "prefill_energy_per_token_mj": 11.627380628359626,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_A100_fp16_tp1_c1_in512_out256_13222336",
@@ -10153,7 +10249,8 @@
     "true_decode_time_ms": 1795.482231306991,
     "true_queue_wait_ms": 0.007593009118541033,
     "prefill_energy_per_token_mj": 4.234442472146339,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_A100_fp16_tp1_c8_in128_out256_13222345",
@@ -10192,7 +10289,8 @@
     "true_decode_time_ms": 1758.615900892857,
     "true_queue_wait_ms": 0.008741815476190476,
     "prefill_energy_per_token_mj": 7.776977359094648,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_A100_fp16_tp1_c8_in512_out1024_13222352",
@@ -10231,7 +10329,8 @@
     "true_decode_time_ms": 8833.243273333333,
     "true_queue_wait_ms": 0.10959555555555554,
     "prefill_energy_per_token_mj": 3.1999525904838655,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_A100_fp16_tp1_c8_in512_out256_13222351",
@@ -10270,7 +10369,8 @@
     "true_decode_time_ms": 1979.4336941324393,
     "true_queue_wait_ms": 0.1416083822296731,
     "prefill_energy_per_token_mj": 2.450895676770345,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c16_in512_out256_13220984",
@@ -10309,7 +10409,8 @@
     "true_decode_time_ms": 1446.438034495413,
     "true_queue_wait_ms": 0.005382415902140673,
     "prefill_energy_per_token_mj": 1.5942361148704947,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c1_in512_out256_13220987",
@@ -10387,7 +10488,8 @@
     "true_decode_time_ms": 1959.4876118742243,
     "true_queue_wait_ms": 0.006762805130326852,
     "prefill_energy_per_token_mj": 1.2021637742636633,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c4_in512_out256_13220990",
@@ -10426,7 +10528,8 @@
     "true_decode_time_ms": 1089.2676868396663,
     "true_queue_wait_ms": 0.005937071362372567,
     "prefill_energy_per_token_mj": 4.0817576620870595,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c8_in128_out256_13220996",
@@ -10465,7 +10568,8 @@
     "true_decode_time_ms": 1120.6925440645773,
     "true_queue_wait_ms": 0.005916714150047483,
     "prefill_energy_per_token_mj": 7.193057372316886,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c8_in2048_out256_13220997",
@@ -10504,7 +10608,8 @@
     "true_decode_time_ms": 1659.8934330275229,
     "true_queue_wait_ms": 0.014204375441072689,
     "prefill_energy_per_token_mj": 1.2861558607210315,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c8_in512_out1024_13221239",
@@ -10543,7 +10648,8 @@
     "true_decode_time_ms": 5319.083666297118,
     "true_queue_wait_ms": 0.005078713968957872,
     "prefill_energy_per_token_mj": 2.954813301964719,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c8_in512_out256_13221240",
@@ -10582,7 +10688,8 @@
     "true_decode_time_ms": 1218.9844794208893,
     "true_queue_wait_ms": 0.0056990692864529475,
     "prefill_energy_per_token_mj": 2.5361475092810535,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_H100_fp16_tp1_c8_in512_out64_13221266",
@@ -10621,7 +10728,8 @@
     "true_decode_time_ms": 296.0723854120121,
     "true_queue_wait_ms": 0.004527690892364306,
     "prefill_energy_per_token_mj": 2.1665523282369845,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "phi_mini_tp1_A100_fp16_10887574",
@@ -11300,7 +11408,8 @@
     "true_decode_time_ms": 2756.6429348511388,
     "true_queue_wait_ms": 0.9349897840046701,
     "prefill_energy_per_token_mj": 2.1880258777663695,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_A100_fp16_tp1_c1_in512_out256_13222363",
@@ -11378,7 +11487,8 @@
     "true_decode_time_ms": 3027.922395576923,
     "true_queue_wait_ms": 2.517369326923077,
     "prefill_energy_per_token_mj": 1.1705098632885753,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_A100_fp16_tp1_c4_in512_out256_13222368",
@@ -11417,7 +11527,8 @@
     "true_decode_time_ms": 2595.463246475771,
     "true_queue_wait_ms": 0.007237665198237885,
     "prefill_energy_per_token_mj": 6.436914149843203,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_A100_fp16_tp1_c8_in128_out256_13222376",
@@ -11456,7 +11567,8 @@
     "true_decode_time_ms": 2612.372029198683,
     "true_queue_wait_ms": 0.007454884742041713,
     "prefill_energy_per_token_mj": 11.356488485759355,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_A100_fp16_tp1_c8_in512_out1024_13222380",
@@ -11495,7 +11607,8 @@
     "true_decode_time_ms": 10732.048441284405,
     "true_queue_wait_ms": 0.009115137614678899,
     "prefill_energy_per_token_mj": 5.351676076997656,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_A100_fp16_tp1_c8_in512_out256_13222373",
@@ -11534,7 +11647,8 @@
     "true_decode_time_ms": 2644.7515853139016,
     "true_queue_wait_ms": 0.18719316143497758,
     "prefill_energy_per_token_mj": 3.5033480252250975,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c16_in512_out256_13222249",
@@ -11573,7 +11687,8 @@
     "true_decode_time_ms": 1065.882063107894,
     "true_queue_wait_ms": 0.005186631983714092,
     "prefill_energy_per_token_mj": 1.8956410782044497,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c1_in512_out256_13222250",
@@ -11651,7 +11766,8 @@
     "true_decode_time_ms": 1177.5965542052566,
     "true_queue_wait_ms": 0.006563391739674593,
     "prefill_energy_per_token_mj": 1.2372682729589086,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c4_in512_out256_13222254",
@@ -11690,7 +11806,8 @@
     "true_decode_time_ms": 1027.5473032286213,
     "true_queue_wait_ms": 0.0043543630017452,
     "prefill_energy_per_token_mj": 6.43686693967441,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c8_in128_out256_13222258",
@@ -11729,7 +11846,8 @@
     "true_decode_time_ms": 1044.546806056587,
     "true_queue_wait_ms": 0.004174491600353669,
     "prefill_energy_per_token_mj": 11.580510432304264,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c8_in2048_out256_13222261",
@@ -11768,7 +11886,8 @@
     "true_decode_time_ms": 1066.8223209111618,
     "true_queue_wait_ms": 0.004232938496583143,
     "prefill_energy_per_token_mj": 1.195409495372313,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c8_in512_out1024_13222265",
@@ -11807,7 +11926,8 @@
     "true_decode_time_ms": 4242.323560954063,
     "true_queue_wait_ms": 0.004587809187279152,
     "prefill_energy_per_token_mj": 3.571985286953883,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c8_in512_out256_13222266",
@@ -11846,7 +11966,8 @@
     "true_decode_time_ms": 1047.2228423247561,
     "true_queue_wait_ms": 0.004056166814551908,
     "prefill_energy_per_token_mj": 3.2069801295930125,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_H100_fp16_tp2_c8_in512_out64_13222269",
@@ -11885,7 +12006,8 @@
     "true_decode_time_ms": 260.778818695297,
     "true_queue_wait_ms": 0.00490186719570545,
     "prefill_energy_per_token_mj": 3.3243233663121035,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c16_in512_out256_13072923",
@@ -11924,7 +12046,8 @@
     "true_decode_time_ms": 5507.088847861272,
     "true_queue_wait_ms": 1.0740873988439306,
     "prefill_energy_per_token_mj": 3.1930179533745053,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c1_in512_out256_13072924",
@@ -12002,7 +12125,8 @@
     "true_decode_time_ms": 6564.511693835617,
     "true_queue_wait_ms": 4.985471164383561,
     "prefill_energy_per_token_mj": 1.8052735201576837,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c4_in512_out256_13072931",
@@ -12041,7 +12165,8 @@
     "true_decode_time_ms": 5328.077269230769,
     "true_queue_wait_ms": 0.0090289592760181,
     "prefill_energy_per_token_mj": 11.88469977269392,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c8_in128_out256_13072938",
@@ -12080,7 +12205,8 @@
     "true_decode_time_ms": 5269.4167028697575,
     "true_queue_wait_ms": 0.009829359823399558,
     "prefill_energy_per_token_mj": 18.374596146321487,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c8_in2048_out256_13072946",
@@ -12119,7 +12245,8 @@
     "true_decode_time_ms": 5645.053692493946,
     "true_queue_wait_ms": 4.094252784503632,
     "prefill_energy_per_token_mj": 2.345379234326794,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c8_in512_out1024_13072951",
@@ -12158,7 +12285,8 @@
     "true_decode_time_ms": 21738.318093749996,
     "true_queue_wait_ms": 0.0073875,
     "prefill_energy_per_token_mj": 8.908665937777531,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c8_in512_out256_13072952",
@@ -12197,7 +12325,8 @@
     "true_decode_time_ms": 5329.883183295711,
     "true_queue_wait_ms": 0.1049548532731377,
     "prefill_energy_per_token_mj": 5.845615626769498,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_L40S_fp16_tp1_c8_in512_out64_13072959",
@@ -12236,7 +12365,8 @@
     "true_decode_time_ms": 1319.664370011601,
     "true_queue_wait_ms": 0.0201203596287703,
     "prefill_energy_per_token_mj": 4.801522271240012,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen7b_tp1_A100_fp16_10887054",
@@ -12835,7 +12965,8 @@
     "true_decode_time_ms": 5505.517185681025,
     "true_queue_wait_ms": 1.1585499417927823,
     "prefill_energy_per_token_mj": 3.232387976439035,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c1_in512_out256_13221290",
@@ -12913,7 +13044,8 @@
     "true_decode_time_ms": 6539.970417748618,
     "true_queue_wait_ms": 5.396724654696134,
     "prefill_energy_per_token_mj": 1.8960299201440054,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c4_in512_out256_13221295",
@@ -12952,7 +13084,8 @@
     "true_decode_time_ms": 5346.580830454546,
     "true_queue_wait_ms": 0.006724545454545454,
     "prefill_energy_per_token_mj": 11.229333644794693,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c8_in128_out256_13221299",
@@ -12991,7 +13124,8 @@
     "true_decode_time_ms": 5258.008617371937,
     "true_queue_wait_ms": 0.009621826280623608,
     "prefill_energy_per_token_mj": 20.85997093793873,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c8_in2048_out256_13221300",
@@ -13030,7 +13164,8 @@
     "true_decode_time_ms": 5658.454025542168,
     "true_queue_wait_ms": 3.6820183132530118,
     "prefill_energy_per_token_mj": 2.2796368463756167,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c8_in512_out1024_13221513",
@@ -13069,7 +13204,8 @@
     "true_decode_time_ms": 21730.97110186916,
     "true_queue_wait_ms": 0.7404130841121497,
     "prefill_energy_per_token_mj": 9.203426805501492,
-    "output_len_target": 1024
+    "output_len_target": 1024,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c8_in512_out256_13221514",
@@ -13108,7 +13244,8 @@
     "true_decode_time_ms": 5340.960160859729,
     "true_queue_wait_ms": 0.19646447963800906,
     "prefill_energy_per_token_mj": 6.059749857890889,
-    "output_len_target": 256
+    "output_len_target": 256,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_L40S_fp16_tp1_c8_in512_out64_13221530",
@@ -13147,7 +13284,8 @@
     "true_decode_time_ms": 1319.3838468023257,
     "true_queue_wait_ms": 0.030990697674418602,
     "prefill_energy_per_token_mj": 5.296659700324185,
-    "output_len_target": 64
+    "output_len_target": 64,
+    "prefill_caveat": "true_prefill_ms may be inflated by continuous batching scheduler overhead at this concurrency level \u2014 use c=1 baseline for absolute prefill comparison"
   },
   {
     "run_id": "qwen_coder_7b_tp1_H100_bf16_11180026",
