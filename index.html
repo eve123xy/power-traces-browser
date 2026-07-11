@@ -57,6 +57,12 @@
                    background: none; line-height: 1; padding: 0 4px; }
   #modal-close:hover { color: #cc2222; }
   #modal-body   { padding: 12px 16px; }
+  #prefill-zoom-btn { display: block; margin: 0 0 8px auto; cursor: pointer;
+                        font-size: 0.72rem; font-weight: 600; color: #bf360c;
+                        border: 1px solid #bf360c; background: #fff8f0;
+                        border-radius: 5px; padding: 4px 10px; }
+  #prefill-zoom-btn:hover { background: #ffe8d6; }
+  #prefill-zoom-btn.active { background: #bf360c; color: #fff; }
   #plotly-div   { width: 100%; height: 440px; }
   #plotly-pg    { width: 100%; height: 160px; margin-top: 8px; }
   #modal-caption { font-size: 0.78rem; color: #555; text-align: center; margin-top: 8px;
@@ -131,6 +137,7 @@
       <button id="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div id="modal-body">
+      <button id="prefill-zoom-btn" onclick="togglePrefillZoom()" style="display:none">Prefill Zoom</button>
       <div id="plotly-div"></div>
       <div id="plotly-pg" style="display:none"></div>
       <div id="modal-caption"></div>
@@ -145,6 +152,8 @@ const RUN_DATA = [{"run_id":"qwen7b_tp2_L40S_fp16_10886619","source":"vllm_tp_sw
 const PHASE_COLORS = {"loading": "#d0e8ff", "warmup": "#ffe8c0", "inference": "#c8f0d8", "teardown": "#ebebeb"};
 const PHASE_LABELS = {"loading": "Model Loading", "warmup": "Warmup", "inference": "Steady Inference", "teardown": "Teardown"};
 const GPU_COLORS = ["#1a5fa8", "#e07b00", "#2ca05a", "#7b2d8b"];
+let prefillZoomOn = false;
+let prefillZoomState = null; // {inferenceStart, baseAnnotations} set each time the modal chart is drawn
 
 // populate dropdowns
 function populateFilter(id, values) {
@@ -267,6 +276,15 @@ function openModal(idx) {
   document.getElementById('modal').classList.add('open');
   document.getElementById('modal-title').textContent = r.run_id;
   document.body.style.overflow = 'hidden';
+
+  // Reset prefill-zoom state for the newly-opened run; button itself is
+  // shown/hidden further down once we know isSust/r.v2.
+  prefillZoomOn = false;
+  prefillZoomState = null;
+  const zoomBtn = document.getElementById('prefill-zoom-btn');
+  zoomBtn.style.display = 'none';
+  zoomBtn.textContent = 'Prefill Zoom';
+  zoomBtn.classList.remove('active');
 
   const qShort = (r.quantization && r.quantization !== 'none') ? r.quantization : r.dtype;
   const archStr = r.model_architecture === 'moe' ? ' · MoE' : '';
@@ -481,6 +499,17 @@ function openModal(idx) {
       hovermode: 'x unified', legend: { x:1, xanchor:'right', font:{size:10} }
     }, { responsive: true, displayModeBar: false });
 
+    // Prefill Zoom: even a genuine, correctly-scaled prefill (e.g. 11ms on a
+    // short prompt) is invisible next to a multi-minute decode phase on a
+    // linear time axis. Rather than resample data, just let the user zoom
+    // the same chart's x-axis to the first 5s of the inference phase, where
+    // the prefill spike actually shows up.
+    const infPhase = trace.phases.find(p => p.phase === 'inference');
+    if (r.v2 && infPhase) {
+      prefillZoomState = { inferenceStart: infPhase.t_start, baseAnnotations: pitAnnotations };
+      document.getElementById('prefill-zoom-btn').style.display = 'block';
+    }
+
     // Per-GPU subplot if multi-GPU
     const gpuKeys = Object.keys(trace.per_gpu || {});
     if (gpuKeys.length > 1) {
@@ -504,6 +533,36 @@ function closeModal() {
   document.body.style.overflow = '';
   Plotly.purge(document.getElementById('plotly-div'));
   Plotly.purge(document.getElementById('plotly-pg'));
+}
+
+function togglePrefillZoom() {
+  if (!prefillZoomState) return;
+  const pDiv = document.getElementById('plotly-div');
+  const btn = document.getElementById('prefill-zoom-btn');
+  prefillZoomOn = !prefillZoomOn;
+
+  if (prefillZoomOn) {
+    const t0 = prefillZoomState.inferenceStart;
+    const zoomNote = {
+      x: 0.5, y: 1, xref: 'paper', yref: 'paper', yanchor: 'bottom', yshift: 34,
+      text: 'Showing first 5s of inference — prefill spike visible at this scale',
+      showarrow: false, font: { size: 9, color: '#1a5fa8' }
+    };
+    Plotly.relayout(pDiv, {
+      'xaxis.range': [t0, t0 + 5],
+      'xaxis.autorange': false,
+      annotations: prefillZoomState.baseAnnotations.concat([zoomNote]),
+    });
+    btn.textContent = 'Prefill Zoom: ON (click to reset)';
+    btn.classList.add('active');
+  } else {
+    Plotly.relayout(pDiv, {
+      'xaxis.autorange': true,
+      annotations: prefillZoomState.baseAnnotations,
+    });
+    btn.textContent = 'Prefill Zoom';
+    btn.classList.remove('active');
+  }
 }
 
 document.getElementById('modal').addEventListener('click', e => {
