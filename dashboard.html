@@ -612,6 +612,7 @@ tbody tr:hover td { background: var(--accent-bg); }
                     <th>Run</th>
                     <th>GPU</th>
                     <th>dtype / quant</th>
+                    <th>Batch Size</th>
                     <th>EPT (mJ)</th>
                     <th>Throughput (tok/s)</th>
                     <th>TTFT p50 (ms)</th>
@@ -936,7 +937,8 @@ function renderRunList() {
     const color  = isSel ? (selColor[r.run_id] || '#ccc') : 'transparent';
     const hasT   = r.has_trace !== false && !r.summary_only;
     const qLabel = r.quantization && r.quantization !== 'none' ? '+' + r.quantization : '';
-    const cLabel = r.concurrency != null ? ` c=${r.concurrency}` : '';
+    const cLabel = r.batch_size != null ? ` bs=${r.batch_size}` :
+                   (r.concurrency != null ? ` c=${r.concurrency}` : '');
 
     const div = document.createElement('div');
     div.className = 'run-item' + (isSel ? ' selected' : '');
@@ -1113,6 +1115,7 @@ async function updateComparison() {
         </td>
         <td>${esc(r.gpu_type||'—')}</td>
         <td>${esc(r.dtype||'—')}${esc(qLabel)}</td>
+        <td>${r.batch_size ?? r.concurrency ?? '—'}</td>
         <td>${fmt(r.energy_per_token_mj, 2)}</td>
         <td>${fmt(r.throughput_tok_s, 1)}</td>
         <td>${fmt(r.ttft_p50_ms, 1)}</td>

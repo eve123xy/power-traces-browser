@@ -236,7 +236,7 @@ function renderGallery() {
     const tpBadge   = r.tp_degree > 1 ? `TP${r.tp_degree}` : '';
     const v2Badge = isV2 ? `<span class="stat-chip ${isV2Partial ? 'v2-partial' : 'v2'}">v2${isV2Partial ? ' · ' + r.data_quality : ''}</span>` : '';
     const v2ExtraStats = isV2 ? `
-          <span class="stat-chip">c${r.concurrency}/in${r.input_len}/out${r.output_len}</span>
+          <span class="stat-chip">bs${r.batch_size}/in${r.input_len}/out${r.output_len}</span>
           <span class="stat-chip">TTFT p50 ${fmtVal(r.ttft_p50_ms, 'ms')}</span>
           <span class="stat-chip">prefill ${fmtVal(r.true_prefill_ms, 'ms')}</span>` : '';
 
