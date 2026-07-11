@@ -1,0 +1,1 @@
+{"ts":[0.0,1.012,2.025],"pw":[117.28,462.22,309.36],"per_gpu":{},"phases":[{"phase":"inference","t_start":0.0,"t_end":2.025}],"run_id":"exp11_llama8b_H100_fp16_tp1_in256_13326813"}
