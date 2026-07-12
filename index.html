@@ -502,10 +502,26 @@ function openModal(idx) {
       );
     }
 
+    // v2_harness traces only tag the actual request-measurement window as
+    // "inference" -- the raw power log around it can include a stretch of
+    // idle monitoring before/after (occasionally much more, when the
+    // harness's request clock and the power logger's clock drift). Left to
+    // autorange, that idle padding stretches across the chart and squeezes
+    // the real signal into a sliver, so v2 charts get an explicit range tied
+    // to the inference phase. Legacy burst_probe traces keep full autorange
+    // since their phases (loading/warmup/inference/teardown) already span
+    // the whole trace meaningfully -- do not touch that path.
+    let xAxisOpts = { title: 'Time (s)' };
+    if (r.v2) {
+      const infPh = trace.phases.find(p => p.phase === 'inference');
+      const rangeEnd = infPh ? infPh.t_end + 5 : trace.ts[trace.ts.length - 1];
+      xAxisOpts = { title: 'Time (s)', range: [-5, rangeEnd] };
+    }
+
     Plotly.newPlot(pDiv, mainTraces, {
       shapes: shapes,
       annotations: pitAnnotations,
-      xaxis: { title: 'Time (s)' },
+      xaxis: xAxisOpts,
       yaxis: { title: 'GPU Power (W)' },
       margin: { t: pitAnnotations.length ? 50 : 30, b: 50, l: 60, r: 20 },
       hovermode: 'x unified', legend: { x:1, xanchor:'right', font:{size:10} }
@@ -531,7 +547,7 @@ function openModal(idx) {
         name: `GPU ${gi}`, line: { color: GPU_COLORS[ci % GPU_COLORS.length], width: 1 }
       }));
       Plotly.newPlot(pgDiv, pgTraces, {
-        xaxis: { title: '' },
+        xaxis: r.v2 ? { title: '', range: xAxisOpts.range } : { title: '' },
         yaxis: { title: 'Per-GPU W' },
         margin: { t: 10, b: 40, l: 60, r: 20 },
         legend: { x:1, xanchor:'right', font:{size:9} }
