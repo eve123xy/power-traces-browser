@@ -500,6 +500,10 @@ tbody tr:hover td { background: var(--accent-bg); }
         <span class="filter-label">Experiment</span>
         <select id="f-exp"><option value="">All</option></select>
       </div>
+      <div class="filter-row">
+        <span class="filter-label">Prompt type</span>
+        <select id="f-prompt-type"><option value="">All</option></select>
+      </div>
       <div class="divider"></div>
       <div class="filter-row">
         <span class="filter-label">Search</span>
@@ -621,6 +625,8 @@ tbody tr:hover td { background: var(--accent-bg); }
                     <th>TPOT p50 (ms)</th>
                     <th>TPOT p99 (ms)</th>
                     <th>Power (W)</th>
+                    <th title="Client-side TTFT-as-prefill-boundary split, integrated GPU power over the batch's prefill/decode windows. burst_probe_v3 runs only.">Prefill (mJ/tok)</th>
+                    <th>Decode (mJ/tok)</th>
                   </tr>
                 </thead>
                 <tbody id="comp-tbody"></tbody>
@@ -680,12 +686,18 @@ const PHASE_FILL_LIGHT = {
   warmup:    'rgba(255,232,192,.4)',
   inference: 'rgba(200,240,216,.4)',
   teardown:  'rgba(235,235,235,.4)',
+  prefill:   'rgba(196,181,253,.4)',
+  decode:    'rgba(200,240,216,.4)',
+  idle:      'rgba(235,235,235,.4)',
 };
 const PHASE_FILL_DARK = {
   loading:   'rgba(29,78,216,.18)',
   warmup:    'rgba(217,119,6,.15)',
   inference: 'rgba(16,185,129,.15)',
   teardown:  'rgba(100,116,139,.12)',
+  prefill:   'rgba(139,92,246,.20)',
+  decode:    'rgba(16,185,129,.15)',
+  idle:      'rgba(100,116,139,.12)',
 };
 
 let allRuns      = [];
@@ -721,7 +733,10 @@ function normalizeRun(r) {
    'tpot_p50_ms','tpot_p99_ms','power_mean_w','tp_size','n_gpus','n_instances',
    'true_prefill_time_ms','true_prefill_time_ms_min','true_prefill_time_ms_max',
    'true_prefill_time_ms_std','ttft_vs_true_prefill_ratio_mean',
-   'true_decode_time_ms','true_queue_wait_ms']
+   'true_decode_time_ms','true_queue_wait_ms',
+   'prefill_mj_per_tok','decode_mj_per_tok','power_during_prefill_w',
+   'power_during_decode_w','power_during_idle_w','vllm_kv_cache_usage_pct',
+   'vllm_requests_running']
     .forEach(f => { n[f] = num(n[f]); });
 
   // has_trace fallback (old format embeds trace inline)
@@ -773,6 +788,7 @@ function populateFilters() {
   fillSelect('f-dtype',  uniq(allRuns.map(r => r.dtype)));
   fillSelect('f-quant',  uniq(allRuns.map(r => r.quantization)));
   fillSelect('f-exp',    uniq(allRuns.map(r => r.experiment_group)));
+  fillSelect('f-prompt-type', uniq(allRuns.map(r => r.prompt_type)));
 }
 
 function fillSelect(id, values) {
@@ -788,6 +804,7 @@ function applyFilters() {
   const dtype  = document.getElementById('f-dtype').value;
   const quant  = document.getElementById('f-quant').value;
   const exp    = document.getElementById('f-exp').value;
+  const ptype  = document.getElementById('f-prompt-type').value;
   const search = document.getElementById('f-search').value.trim().toLowerCase();
 
   filteredRuns = allRuns.filter(r => {
@@ -796,6 +813,7 @@ function applyFilters() {
     if (dtype && r.dtype             !== dtype) return false;
     if (quant && r.quantization      !== quant) return false;
     if (exp   && r.experiment_group  !== exp)   return false;
+    if (ptype && r.prompt_type       !== ptype) return false;
     if (search) {
       const hay = (r.run_id + ' ' + (r.model_short||'') + ' ' + (r.model||'')).toLowerCase();
       if (!hay.includes(search)) return false;
@@ -809,7 +827,7 @@ function applyFilters() {
 }
 
 function clearFilters() {
-  ['f-family','f-gpu','f-dtype','f-quant','f-exp'].forEach(id => document.getElementById(id).value = '');
+  ['f-family','f-gpu','f-dtype','f-quant','f-exp','f-prompt-type'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-search').value = '';
   applyFilters();
 }
@@ -937,8 +955,9 @@ function renderRunList() {
     const color  = isSel ? (selColor[r.run_id] || '#ccc') : 'transparent';
     const hasT   = r.has_trace !== false && !r.summary_only;
     const qLabel = r.quantization && r.quantization !== 'none' ? '+' + r.quantization : '';
-    const cLabel = r.batch_size != null ? ` bs=${r.batch_size}` :
-                   (r.concurrency != null ? ` c=${r.concurrency}` : '');
+    const cLabel = (r.batch_size != null ? ` bs=${r.batch_size}` :
+                   (r.concurrency != null ? ` c=${r.concurrency}` : '')) +
+                   (r.prompt_type ? ` · ${r.prompt_type}` : '');
 
     const div = document.createElement('div');
     div.className = 'run-item' + (isSel ? ' selected' : '');
@@ -1124,6 +1143,8 @@ async function updateComparison() {
         <td>${fmt(r.tpot_p50_ms, 2)}</td>
         <td>${fmt(r.tpot_p99_ms, 2)}</td>
         <td>${fmt(r.power_mean_w, 1)}</td>
+        <td>${fmt(r.prefill_mj_per_tok, 2)}</td>
+        <td>${fmt(r.decode_mj_per_tok, 2)}</td>
       </tr>
     `);
   });
@@ -1256,6 +1277,9 @@ function exportCSV() {
     'ttft_vs_true_prefill_ratio_mean','true_decode_time_ms','true_queue_wait_ms',
     'tpot_p50_ms','tpot_p99_ms',
     'power_mean_w','has_trace','summary_only','v2','data_quality',
+    'prompt_type','prefill_mj_per_tok','decode_mj_per_tok',
+    'power_during_prefill_w','power_during_decode_w','power_during_idle_w',
+    'vllm_kv_cache_usage_pct','vllm_requests_running',
   ];
 
   const csvLines = [COLS.join(',')];
