@@ -162,6 +162,11 @@ footer.colophon code { background: var(--surface-2); padding: 1px 5px; border-ra
     <p class="lede">The five prompt types &mdash; math problems, code debugging, ordinary prose, long-form reasoning, and random tokens &mdash; were run across 89 serving configurations at two batch sizes, 890 batches in total, with model, GPU, dtype, quantization, and tensor-parallel degree all varying across the configuration set.</p>
   </section>
 
+  <section id="method">
+    <h2 class="sh">Comparing within a configuration, not across the whole pool</h2>
+    <p>To isolate the real effect of the prompt, each prompt type is only ever compared against the other four run on the exact same model, GPU, and settings, with output length fixed at 256 tokens &mdash; so the only thing changing is the prompt itself.</p>
+  </section>
+
   <section id="traces">
     <div class="filters">
       <div class="fgroup"><label>Batch size</label><div class="seg" id="bsSeg"><button data-bs="4" class="active">4</button><button data-bs="1">1</button></div></div>
@@ -169,12 +174,6 @@ footer.colophon code { background: var(--surface-2); padding: 1px 5px; border-ra
       <div class="legend" id="traceLegend" style="margin:0"></div>
     </div>
     <div class="trace-grid" id="traceGrid"></div>
-    <figcaption>Native 10ms power traces, five prompt types overlaid, for 15 of the 89 configurations spanning model size, GPU, quantization, and tensor-parallel degree. Hover a panel for exact wattage. The &#9650; marker is the modeled prefill&rarr;decode boundary discussed further down &mdash; not a measured transition.</figcaption>
-  </section>
-
-  <section id="method">
-    <h2 class="sh">Comparing within a configuration, not across the whole pool</h2>
-    <p>To isolate the real effect of the prompt, each prompt type is only ever compared against the other four run on the exact same model, GPU, and settings, with output length fixed at 256 tokens &mdash; so the only thing changing is the prompt itself.</p>
   </section>
 
   <section id="decode-result">
@@ -210,57 +209,23 @@ footer.colophon code { background: var(--surface-2); padding: 1px 5px; border-ra
 
   <section id="ttft">
     <h2 class="sh">The TTFT effect that turned out to be a red herring</h2>
-    <p>One metric initially looked like it broke the pattern: TTFT, where prompt type explained a real share of the difference (about 20%) &mdash; math prompts showing much higher time-to-first-token than the other categories.</p>
-    <p>Checking the experimental order explains it away: this isn't a semantic effect, it's cold start and run position. Every configuration issues the five prompt types in the same fixed sequence &mdash; math, code, prose, reasoning, random tokens &mdash; right after a fresh server launch, so math is always the first request the server handles after startup.</p>
-    <p>Mean TTFT at batch size 4 falls off sharply with position: roughly 986ms at position zero, 160ms at position one, 152ms at position two, 124ms at position three, and 121ms at position four.</p>
+    <p>TTFT initially looked like an exception, with prompt type explaining about 20% of the difference &mdash; math showed much higher time-to-first-token than the rest. But this traces to the fixed request order, not the prompt itself: every configuration runs the same sequence (math &rarr; code &rarr; prose &rarr; reasoning &rarr; random tokens) right after server launch, so math always eats the cold-start tax. Mean TTFT at batch size 4 drops sharply after that first request: ~986ms at position zero, then 160/152/124/121ms for positions one through four.</p>
     <div class="filters">
       <div class="fgroup"><label>Batch size</label><div class="seg" id="bsSeg2"><button data-bs="4" class="active">4</button><button data-bs="1">1</button></div></div>
     </div>
     <figure>
       <div class="order-wrap" id="orderChart"></div>
-      <figcaption>Mean TTFT across all 89 configurations, bucketed by request position (0&ndash;4). Bars are colored by whichever prompt happens to occupy that position in the fixed run order &mdash; <b>not</b> by anything about the prompt itself. Real text (prose) always sits at position two for the same structural reason math always sits at position zero.</figcaption>
     </figure>
-    <p>So it's cold start, not content &mdash; the first request after launch eats the CUDA/warm-up tax no matter what it says, and math just always happens to sit in that slot. Double-checked against the raw per-batch data and it holds up: TTFT by position comes out to 936 / 164 / 154 / 123 / 121ms, while decode power across those same positions barely moves (419&ndash;430W) &mdash; cold start hits scheduling, not compute. One example run shows the shape directly: 389ms (math, cold) &rarr; 38.9 &rarr; 35.0 &rarr; 33.6 &rarr; 34.2ms once everything's warm. Caveat: prompt identity and run position are fully tangled here, so a cleaner test would randomize the order to be sure.</p>
+    <p>Decode power across those same positions barely moves (419&ndash;430W), confirming cold start hits scheduling, not compute. Caveat: prompt identity and run position are fully tangled here, so a cleaner test would randomize the order to be sure.</p>
   </section>
 
   <section id="practice">
     <h2 class="sh">What this means in practice</h2>
     <p>Prompt classification isn't a useful predictor of stable decode power here. A scheduler assigning different power budgets based on "this looks like a math request" versus "this looks like a code request" wouldn't gain much &mdash; the levers that actually move decode power are model choice, batch/concurrency conditions, tensor-parallel configuration, precision, quantization, and expected output length.</p>
-    <figure>
-      <div class="barsN" id="factorGrid"></div>
-      <figcaption>Decode power and energy by model size and by GPU, pooled across the relevant configurations at batch size 4 &mdash; the two factors with the widest real range in this dataset.</figcaption>
-    </figure>
-
-    <h3 class="ssh">Two of these factors, as actual traces</h3>
-    <p>Tensor-parallel degree and quantization are the two factors where the same model on the same GPU was measured at every level of the factor, so instead of a bar summary, here are the real power-vs-time curves, same prompt (normal prose), same batch size:</p>
-    <figure>
-      <div class="chart-card">
-        <div class="legend" id="tpLegend"></div>
-        <div class="chart-wrap">
-          <svg class="chart" id="tpTraceChart" viewBox="0 0 680 260"></svg>
-          <div class="tooltip" id="tpTraceTip"></div>
-        </div>
-      </div>
-      <figcaption>Llama-8B on H200, bf16 &mdash; TP1 vs. TP2 vs. TP4, same prompt and batch size. Power scales up with GPU count; the curves stack rather than reshape.</figcaption>
-    </figure>
-    <figure>
-      <div class="chart-card">
-        <div class="legend" id="quantLegend"></div>
-        <div class="chart-wrap">
-          <svg class="chart" id="quantTraceChart" viewBox="0 0 680 260"></svg>
-          <div class="tooltip" id="quantTraceTip"></div>
-        </div>
-      </div>
-      <figcaption>Qwen-7B on H100 &mdash; fp16 baseline vs. AWQ vs. GPTQ, same prompt and batch size. AWQ and GPTQ both pull the curve down from fp16, but GPTQ finishes decode noticeably faster than AWQ &mdash; five batches per variant, a preliminary read rather than a settled result.</figcaption>
-    </figure>
-    <div class="pullquote">The semantic identity of the prompt changes the model's output, but under a fixed dense-model configuration it does not materially change the computation performed per decode step. With output length fixed, math, code, prose, long reasoning, and random-token prompts produce nearly identical decode power and energy per token. The apparent prompt effect on TTFT is explained by fixed request order and cold start, while prefill power is too short and telemetry-sensitive to support a reliable prompt comparison.</div>
+    <div class="pullquote">The semantic identity of the prompt changes the model's output, but under a fixed dense-model configuration it does not materially change the computation performed per decode step. With output length fixed, math, code, prose, long reasoning, and random-token prompts produce nearly identical decode power and energy per token.</div>
   </section>
 
   </article>
-
-  <footer class="colophon">
-    Source: <code>burst_probe_v3/results/*/*_burst_v3.json</code>, 89 unique (model, GPU, precision, quantization, TP) signatures. Prompt order is fixed per server launch: math_problems &rarr; code_debugging &rarr; real_text &rarr; long_reasoning &rarr; random_tokens. Each factor's explained share is computed independently, one at a time. The trace grid draws from 15 configurations chosen to span model size, GPU generation, quantization, and TP degree; every other chart aggregates over all 89.
-  </footer>
 
 </div>
 </div>
@@ -691,8 +656,6 @@ function renderFactorTraces() {
 renderTraceGrid();
 renderOrderChart();
 renderBars3();
-renderFactorGrid();
-renderFactorTraces();
 </script>
 
 
