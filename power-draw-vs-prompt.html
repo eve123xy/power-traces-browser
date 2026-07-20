@@ -219,12 +219,6 @@ footer.colophon code { background: var(--surface-2); padding: 1px 5px; border-ra
     <p>Decode power across those same positions barely moves (419&ndash;430W), confirming cold start hits scheduling, not compute. Caveat: prompt identity and run position are fully tangled here, so a cleaner test would randomize the order to be sure.</p>
   </section>
 
-  <section id="practice">
-    <h2 class="sh">What this means in practice</h2>
-    <p>Prompt classification isn't a useful predictor of stable decode power here. A scheduler assigning different power budgets based on "this looks like a math request" versus "this looks like a code request" wouldn't gain much &mdash; the levers that actually move decode power are model choice, batch/concurrency conditions, tensor-parallel configuration, precision, quantization, and expected output length.</p>
-    <div class="pullquote">The semantic identity of the prompt changes the model's output, but under a fixed dense-model configuration it does not materially change the computation performed per decode step. With output length fixed, math, code, prose, long reasoning, and random-token prompts produce nearly identical decode power and energy per token.</div>
-  </section>
-
   </article>
 
 </div>
